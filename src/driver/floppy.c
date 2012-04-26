@@ -31,6 +31,14 @@
 
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
+#define CW_FLOPPY_NO_SLEEP_ON
+#endif /* LINUX_VERSION_CODE */
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,38)
+#define CW_FLOPPY_UNLOCKED_IOCTL
+#endif /* LINUX_VERSION_CODE */
+
+#ifdef CW_FLOPPY_NO_SLEEP_ON
 #define do_sleep_on(cond, wq)					\
 	do							\
 		{						\
@@ -41,9 +49,9 @@
 		finish_wait(wq, &w);				\
 		}						\
 	while (0)
-#else /* LINUX_VERSION_CODE */
+#else /* CW_FLOPPY_NO_SLEEP_ON */
 #define do_sleep_on(cond, wq)		sleep_on(wq)
-#endif /* LINUX_VERSION_CODE */
+#endif /* CW_FLOPPY_NO_SLEEP_ON */
 
 #define get_controller(minor)		((minor >> 6) & 3)
 #define get_floppy(minor)		((minor >> 5) & 1)
@@ -927,11 +935,10 @@ cw_floppy_char_release(
 
 
 /****************************************************************************
- * cw_floppy_char_ioctl
+ * cw_floppy_char_unlocked_ioctl
  ****************************************************************************/
 static ssize_t
-cw_floppy_char_ioctl(
-	struct inode			*inode,
+cw_floppy_char_unlocked_ioctl(
 	struct file			*file,
 	unsigned int			cmd,
 	unsigned long			arg)
@@ -983,15 +990,37 @@ cw_floppy_char_ioctl(
 
 
 
+#ifndef CW_FLOPPY_UNLOCKED_IOCTL
+/****************************************************************************
+ * cw_floppy_char_ioctl
+ ****************************************************************************/
+static ssize_t
+cw_floppy_char_ioctl(
+	struct inode			*inode,
+	struct file			*file,
+	unsigned int			cmd,
+	unsigned long			arg)
+
+	{
+	return (cw_floppy_char_unlocked_ioctl(file, cmd, arg));
+	}
+#endif /* !CW_FLOPPY_UNLOCKED_IOCTL */
+
+
+
 /****************************************************************************
  * cw_floppy_fops
  ****************************************************************************/
 struct file_operations			cw_floppy_fops =
 	{
-	.owner   = THIS_MODULE,
-	.open    = cw_floppy_char_open,
-	.release = cw_floppy_char_release,
-	.ioctl   = cw_floppy_char_ioctl
+	.owner          = THIS_MODULE,
+	.open           = cw_floppy_char_open,
+	.release        = cw_floppy_char_release,
+#ifdef CW_FLOPPY_UNLOCKED_IOCTL
+	.unlocked_ioctl = cw_floppy_char_unlocked_ioctl
+#else /* CW_FLOPPY_UNLOCKED_IOCTL */
+	.ioctl          = cw_floppy_char_ioctl
+#endif /* CW_FLOPPY_UNLOCKED_IOCTL */
 	};
 
 
