@@ -30,7 +30,7 @@ LD:=ld -r -s
 .PHONY: all linux24 linux26 clean
 
 all:
-	if [ "${VERSION}" = "26" ]; then ${MAKE} linux26; else ${MAKE} linux24; fi
+	if [ "${VERSION}" -gt "26" ]; then ${MAKE} linux26; else ${MAKE} linux24; fi
 
 linux24: config.h firmware.c ${TARGET24}
 
