@@ -297,7 +297,7 @@ static struct pci_device_id		cw_hardware_mk3_pci_ids[] =
 		},
 		{ 0 }
 	};
-#if LINUX_VERSION_CODE >= 0x020600
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
 
 /* multiple MODULE_DEVICE_TABLE entries seem to cause problems with 2.4 */
 

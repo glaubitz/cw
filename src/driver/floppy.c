@@ -30,7 +30,7 @@
 
 
 
-#if LINUX_VERSION_CODE >= 0x020600
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
 #define do_sleep_on(cond, wq)					\
 	do							\
 		{						\
