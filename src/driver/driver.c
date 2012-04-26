@@ -233,7 +233,7 @@ error:
  ****************************************************************************/
 module_init(cw_driver_module_init);
 module_exit(cw_driver_module_exit);
-#if LINUX_VERSION_CODE >= 0x020600
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
 module_param(cw_debug_level, int, 0);
 module_param(cw_major, int, 0);
 #else /* LINUX_VERSION_CODE */
