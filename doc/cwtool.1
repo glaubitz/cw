@@ -1,0 +1,449 @@
+.ds Q" ""
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+
+.TH cwtool 1 "cw 0.13"
+
+.SH NAME
+cwtool \- tool for reading and writing floppy disk images with a Catweasel controller
+
+.SH SYNOPSIS
+.B cwtool
+\-V
+
+.B cwtool
+\-D
+
+.B cwtool
+\-I
+[\-v]
+[\-n]
+[\-f \fI<file>\fR]
+[\-e \fI<config>\fR]
+
+.B cwtool
+\-L
+[\-v]
+[\-n]
+[\-f \fI<file>\fR]
+[\-e \fI<config>\fR]
+
+.B cwtool
+\-S
+[\-v]
+[\-n]
+[\-f \fI<file>\fR]
+[\-e \fI<config>\fR]
+\fI<diskname>\fR
+\fI<srcfile|device>\fR
+
+.B cwtool
+\-R
+[\-v]
+[\-n]
+[\-f \fI<file>\fR]
+[\-e \fI<config>\fR]
+[\-r \fI<num>\fR]
+[\-o \fI<file>\fR]
+\fI<diskname>\fR
+\fI<srcfile|device>\fR
+[\fI<srcfile>\fR ...]
+\fI<dstfile>\fR
+
+.B cwtool
+\-W
+[\-v]
+[\-n]
+[\-f \fI<file>\fR]
+[\-e \fI<config>\fR]
+[\-s]
+\fI<diskname>\fR
+\fI<srcfile>\fR
+\fI<dstfile|device>\fR
+
+.SH DESCRIPTION
+.PP
+\fBcwtool\fR is the user space companion program for the cw kernel driver module. cw is a package for the Catweasel controller especially for accessing the floppy drives connected to Catweasel. Some preliminary remarks:
+.RS
+.IP * 2
+\fBcwtool\fR uses one number for track numbering (you see those numbers with the options \-R \-v or \-W \-v). This number contains the hardware track and side. How the conversion is done depends on the configuration of the selected disk format. In most cases the track number is equal to 2 * hardware_track + side and is within the range from 0 to 171.
+.IP * 2
+Options like \-D, \-n, \-f or \-e refer to a configuration. The configuration syntax is currently undocumented, because it may change in future versions.
+.IP * 2
+If you want to use files named \- use ./\-, because otherwise \fBcwtool\fR would use stdin or stdout (depending on the file being source or destination).
+.IP * 2
+\fBcwtool\fR reads or writes disk images, it does not care if these images contain valid file systems or not. If you want to access the filesystem within an image, you have to use separate tools. Some tools are listed below.
+.IP * 2
+Not all formats have been extensively tested, if you have problems please contact the author (the email address is listed in the README of the source distribution).
+.IP * 2
+To allow reading and writing of G64 disk images \fBcwtool\fR has some built\-in magic. Before writing such images to disk unneeded data is stripped away, to shorten the track. Otherwise the track data may be too long and the last bytes of the track would overwrite the SYNC of the first sector. This does only work if the G64 image does contain valid CBM sector header ids, if not the data is written unchanged and may be too long. After reading a disk the same routines are used to strip away the track gap. It may be possible that too many data is discarded and the image is unusable (especially disks with copy protection mechanisms may use obscure sector layouts or other things). If you have such disks please send the author a raw image of it (look below how to create one). Additionally after reading the data after a SYNC is also byte aligned, because it seems VICE does not like unaligned data. To see what the track stripping and aligning routines are doing use \-v \-v \-v \-v.
+.RE
+
+.SH OPTIONS
+.IP "\-V, \-\-version" 8
+Print out version and exit.
+.IP "\-D, \-\-dump" 8
+Dump builtin config and exit.
+.IP "\-I, \-\-initialize" 8
+Initialize the configured devices.
+.IP "\-L, \-\-list" 8
+List available disk names and exit.
+.IP "\-S, \-\-statistics" 8
+Print out statistics of a disk, most notably the histogram.
+.IP "\-R, \-\-read" 8
+Read a disk and write the content to an image file. In combination with \-v a detailed report about bad sectors is given, the format is ss=ee@0xhhhhhh, with:
+.RS
+.IP * 2
+ss \-\- sector number
+.IP * 2
+ee \-\- error description: nf \- not found, en \- encoding error (MFM, GCR, ...), nu \- wrong track/other number, si \- wrong sector size, cs \- checksum error, id \- wrong id, mx \- mixed error
+.IP * 2
+hhhhhh \-\- hexadecimal offset in destination file
+.RE
+.IP "\-W, \-\-write" 8
+Write a disk with content read from an image file.
+.IP "\-h, \-\-help" 8
+Print out usage information.
+.IP "\-v, \-\-verbose" 8
+Increase verbosity level.
+.IP "\-n, \-\-no\-rcfiles" 8
+Do not read rcfiles (/etc/cwtoolrc and ~/.cwtoolrc) on startup.
+.IP "\-f \fI<file>\fR, \-\-config \fI<file>\fR" 8
+Read additional config from \fI<file>\fR.
+.IP "\-e \fI<config>\fR, \-\-evaluate \fI<config>\fR" 8
+Evaluate the given string \fI<config>\fR as configuration parameters.
+.IP "\-r \fI<num>\fR, \-\-retry \fI<num>\fR" 8
+Retry \fI<num>\fR times on read errors.
+.IP "\-o \fI<file>\fR, \-\-output \fI<file>\fR" 8
+output raw data of bad sectors to \fI<file>\fR.
+.IP "\-s, \-\-ignore\-size" 8
+Do not check if source file contains more or less bytes than needed.
+
+.SH EXAMPLES
+.IP "1." 8
+.Vb
+\&\fBcwtool\fR \-L \-v
+.Ve
+Get a list of all available disk names with some additional information.
+
+.IP "2." 8
+.Vb
+\&\fBcwtool\fR \-S raw_14 /dev/cw0raw0
+.Ve
+Access first floppy drive on first controller and print out a histogram of a disk read with 14 MHz.
+
+.IP "3." 8
+.Vb
+\&\fBcwtool\fR \-R \-v msdos_hd /dev/cw0raw0 bootdisk.img
+.Ve
+Read an MSDOS HD disk and write the content to file bootdisk.img. Print out some status information while reading.
+
+.IP "4." 8
+.Vb
+\&\fBcwtool\fR \-W \-v c1541 image.d64 /dev/cw2raw1
+.Ve
+Write a C1541 disk with the content read from image.d64 to the second floppy drive of the third controller.
+
+.IP "5." 8
+.Vb
+\&\fBgzip\fR \-d \-c image.adf.gz |
+\&\fBcwtool\fR \-W \-v amiga_dd \- /dev/cw0raw0
+.Ve
+Uncompress image.adf.gz on the fly and write it to disk.
+
+.IP "6." 8
+.Vb
+\&\fBcwtool\fR \-W \-v amiga_dd image.adf /dev/cw0raw0 &&
+\&\fBcwtool\fR \-R amiga_dd /dev/cw0raw0 \- |
+\&\fBcmp\fR \- image.adf
+.Ve
+Write image.adf to disk, read it in and compare with the original data, if there is a difference \fBcmp\fR will exit with an error message.
+
+.IP "7." 8
+.Vb
+\&\fBcwtool\fR \-R \-r 0 \-v raw_14 /dev/cw0raw0 \- |
+\&\fBbzip2\fR \-c \- > image.cwraw.bz2
+.Ve
+Read a disk with 14 MHz and compress the data on the fly. The written data is in raw format, this means it contains just the values \fBcwtool\fR got from the kernel driver. This is useful for later analysis of the disk format, if the format is currently not supported by \fBcwtool\fR. DD disks should be read with raw_14 and HD disks with raw_28. Giving higher values to \-r means that more copies of every track will be saved. This will enlarge the raw image files noticeable.
+
+.IP "8." 8
+.Vb
+\&\fBcwtool\fR \-S \-v \-f \- my_raw /dev/cw0raw0 <<EOC
+\&disk \*(Q"my_raw\*(Q"
+\&        {
+\&        format \*(Q"raw\*(Q"
+\&        image \*(Q"raw\*(Q"
+\&        clock 28
+\&        track 120 timeout 500
+\&        }
+\&EOC
+.Ve
+Read track 120 (hardware track 60, first side) of a disk with 28 MHz, print out a long histogram.
+
+.IP "9." 8
+.Vb
+\&\fBcwtool\fR \-W \-v msdos_hd /dev/zero /dev/cw0raw0
+.Ve
+Format an MSDOS HD disk with all sectors containing zeros.
+
+.IP "10." 8
+.Vb
+\&\fBcwtool\fR \-W \-v amiga_dd /dev/urandom /dev/cw0raw0
+.Ve
+Format an Amiga DD disk with all sectors containing random data.
+
+.IP "11." 8
+.Vb
+\&\fBcwtool\fR \-R \-r 0 \-v \-v \-v \-v \-v \-v amiga_dd  \\
+\&        /dev/cw0raw0 /dev/null 2> log
+.Ve
+Write a more verbose report of what happened while reading an Amiga DD disk to log, do not retry on disk errors.
+
+.IP "12." 8
+.Vb
+\&\fBcwtool\fR \-W \-v c1541_42_g64 image.g64 /dev/cw2raw1
+.Ve
+Write a C1541 disk with the content read from image.g64 to the second floppy drive of the third controller. If image.g64 contains more or less than the needed 42 tracks you will get warnings.
+
+.IP "13." 8
+.Vb
+\&\fBcwtool\fR \-I \-f \- <<EOC
+\&drive \*(Q"/dev/cw0raw0\*(Q"
+\&        {
+\&        ignore_diskchange yes
+\&        double_step yes
+\&        }
+\&EOC
+.Ve
+This instructs the driver to not check if an index pulse is present or not. This also means that the driver always reads from the drive, regardless if there is a disk or not. This is especially useful to read the flip side of C1541 disks with an unmodified 360K drive.
+
+.SH FILESYSTEM ACCESS
+.IP "mtools, http://www.gnu.org/software/mtools/intro.html" 8
+Mtools is a collection of utilities to access MS\-DOS disks or images without mounting them.
+.IP "hfsutils, http://www.mars.org/home/rob/proj/hfs/" 8
+Permits manipulation of HFS volumes. HFS is the \*(Q"Hierarchical File System\*(Q", the native volume format used on modern Macintosh computers.
+.IP "c1541 (part of VICE), http://www.viceteam.org/" 8
+Allows access to or creation of D64 and G64 image files. For example
+
+.Vb
+\&\fBc1541\fR \-format test,00 g64 /tmp/test.g64
+.Ve
+creates an G64 empty image file. Later on you may add files to it.
+
+.IP "imgtool (part of MESS), http://www.mess.org/" 8
+Imgtool is a tool for the maintenance and manipulation of disk and other types of images that MESS users need to deal with. Functions include retrieving and storing files and CRC checking/validation. It supports many different image formats.
+.IP "loop mounts" 8
+If supported by your kernel you may mount some images directly. For example
+
+.Vb
+\&\fBmount\fR \-t affs \-o loop image.adf /mnt
+.Ve
+mounts the named image file containing an affs filesystem to /mnt.
+
+.SH HARDWARE ODDITIES
+.IP "Use short cables" 8
+Do not use long floppy cables. They worsen signal quality and may produce errors you won't get with shorter cables.
+.IP "5.25\*(Q" drives and C1541" 8
+If you want to read both sides of a C1541 disk you need to modify your 5.25\*(Q" floppy drive, because of the missing index hole on the flip side. Most drives do not read data without an index hole being present. It is not possible to reliably read the second side of such a disk without flipping it, because the upper and lower head of the disk drive are shifted by some tracks. A C1541 drive always writes with the upper head. If you try to read the flip side with the lower head, the first tracks are definitely inaccessible.
+
+NOTE: older 360K drives seem to read data independently of the index pulse being present or not. So you may use such drives without modifications, but you have to instruct the driver to not rely on the diskchange\-signal, see below.
+
+.IP "5.25\*(Q" 360K drives" 8
+Assume your 360K drive is on /dev/cw0raw0, then try the following (yes the line break is ok, but you may also write it in one line):
+
+.Vb
+\&\fBcwtool\fR \-I \-e 'drive \*(Q"/dev/cw0raw0\*(Q"
+\&    { inverted_diskchange yes double_step yes }'
+.Ve
+Those drives seem to give an inverted diskchange\-signal and work with 300 rpm instead of 360 rpm like the 1.2M ones. My 360K drive also reads data if no index pulse is present, so you do not need to modify such drives, just use the following command to configure the driver accordingly (yes the line break is ok, but you may also write it in one line):
+
+.Vb
+\&\fBcwtool\fR \-I \-e 'drive \*(Q"/dev/cw0raw0\*(Q"
+\&    { ignore_diskchange yes double_step yes }'
+.Ve
+This instructs the driver to not check if an index pulse is present or not. But this also means that the driver will not return an error if no disk is in the drive. You should now be able to read a C1541 disk or a Apple IIe disk:
+
+.Vb
+\&\fBcwtool\fR \-R \-v c1541_300 /dev/cw0raw0 image.d64
+\&\fBcwtool\fR \-R \-v mac_5.25_300 /dev/cw0raw0 image.bin
+.Ve
+As mentioned above 360K drives operate with 300 rpm instead of 360 rpm like the 1.2M ones, so you need to use different disk configurations.
+
+.IP "3.5\*(Q" DD and HD disks" 8
+There is a difference between 3.5\*(Q" HD and DD disks, especially when HD disks are written in a DD drive, below is an explanation shamelessly stolen from Michael Krause's cwfloppy README:
+
+\*(Q"... The small hole in the upper left corner DOES make a difference. Back when you've been buying lots of disks, it was NOT just some trick of the floppy disk industry to make you buy expensive HD disks when you thought you could get away with cheap DD disks :\-)
+
+When you insert an HD disk into an HD floppy drive, the floppy drive actually changes physical parameters, for example magnetization thresholds and writing current strength. A floppy drive does not and can not write an HD disk in HD format with the same physical parameters as a DD disk in DD format!
+
+If you use HD disks with HD format and DD disks with DD format, everything's fine. However, at some time in the nineties, the floppy disk industry stopped selling DD disks. Because many Amiga users still relied on the DD format (only the Amiga 4000 has an HD drive), they simply took HD disks and used them in their DD drives. Some users covered the HD indicator hole with a piece of tape, some didn't. Because their drives were only DD drives, the drive didn't care \-\- so it really didn't make a difference either! Most HD disks seem to work fine this way, even though they have been constructed for HD formatting. In fact, I've never come across an HD disk that could NOT be used in an Amiga DD drive. There have been people claiming otherwise, though.
+
+However, if you insert an HD disk formatted in DD format into an HD drive, you HAVE to take care to cover the HD indicator hole! If you do not do this, the drive will think it is an HD formatted disk and adjust its physical parameters accordingly, leading to READ and/or WRITE ERRORS on a basically fine disk! Unfortunately, this can not be worked around in software.
+
+So, if somebody gives you a disk with an HD hole and you can not mount it as either Amiga HD or MS\-DOS HD, it could be a perfectly fine DD formatted disk \-\- only your drive is in the wrong mode to read it without errors, because it detects the uncovered HD hole and thinks it is in HD format. Cover the hole with some piece of tape, and everything will be fine. ...\*(Q"
+
+.SH SOME BACKGROUND INFORMATION
+.IP "Some basics (shamelessly stolen from Wikipedia)" 8
+\*(Q"... A floppy disk is a data storage medium that is composed of a disk of thin, flexible (\*(Q"floppy\*(Q") magnetic storage medium encased in a square or rectangular plastic shell. Floppy disks are read and written by a floppy disk drive. Invented by IBM, floppy disks in 8\*(Q" (200 mm), 5.25\*(Q" (133.3 mm), and the newest and most common 3.5\*(Q" (90 mm) formats enjoyed many years as a popular and ubiquitous form of data storage and exchange from the mid\-1970s to the late 1990s.
+
+The 5.25\*(Q" disk had a large circular hole in the center for the spindle of the drive and a small oval aperture in both sides of the plastic to allow the heads of the drive to read and write the data. The magnetic medium could be spun by rotating it from the middle hole. A small notch on the right hand side of the disk would identify whether the disk was read\-only or writable, detected by a mechanical switch or photo transistor above it. Another LED/phototransistor pair located near the center of the disk could detect a small hole once per rotation, called the index hole, in the magnetic disk. It was used to detect the start of each track, and whether or not the disk rotated at the correct speed; some operating systems, such as Apple DOS, did not use index sync, and often the drives designed for such systems lacked the index hole sensor. Disks of this type were said to be soft sector disks. Very early 8\*(Q" and 5.25\*(Q" disks also had physical holes for each sector, and were termed hard sector disks. Inside the disk were two layers of fabric designed to reduce friction between the medium and the outer casing, with the medium sandwiched in the middle. The outer casing was usually a one\-part sheet, folded double with flaps glued or spot\-welded together. A catch was lowered into position in front of the drive to prevent the disk from emerging, as well as to raise or lower the spindle (and, in two\-sided drives, the upper read/write head).
+
+The 8\*(Q" disk was very similar in structure to the 5.25\*(Q" disk, with the exception that the read\-only logic was in reverse: the slot on the side had to be taped over to allow writing.
+
+The 3.5\*(Q" disk is made of two pieces of rigid plastic, with the fabric\-medium\-fabric sandwich in the middle to remove dust and dirt. The front has only a label and a small aperture for reading and writing data, protected by a spring\-loaded metal or plastic cover, which is pushed back on entry into the drive. The reverse has a similar covered aperture, as well as a hole to allow the spindle to connect into a metal plate glued to the medium. Two holes, bottom left and right, indicate the write\-protect status and high\-density disk correspondingly, a hole meaning protected or high density, and a covered gap meaning write\-enabled or low density.
+
+In general, data is written to floppy disks in a series of sectors (angular blocks of the disk) and in tracks (concentric rings at a constant radius), e.g. the HD format of 3.5\*(Q" floppy disks uses 512 bytes per sector, 18 sectors per track, 80 tracks per side and two sides, for a total of 1,474,560 bytes per disk.
+
+On most microcomputer platforms, disks are written using a Constant Angular Velocity (CAV) \-\- Constant Sector Capacity format. This means that the disk spins at a constant speed, and the sectors on the disk all hold the same amount of information on each track regardless of radial location. However, this is not the most efficient way to use the disk surface, even with available drive electronics. Because the sectors have a constant angular size, the 512 bytes in each sector are packed into a smaller length near the disk's center than nearer the disk's edge. A better technique would be to increase the number of sectors/track toward the outer edge of the disk, from 18 to 30 for instance, thereby keeping constant the amount of physical disk space used for storing each 512 byte sector. Apple implemented this solution in the early Macintosh computers by spinning the disk slower when the head was at the edge while keeping the data rate the same, allowing them to store 400 kB per side, amounting to an extra 160 kB on a double\-sided disk. ...\*(Q"
+
+.IP "NRZ \- Non Return to Zero" 8
+Data is written as a serial stream to the floppy disk. But the 0's and 1's are not written directly, instead the NRZ\-Coding is used. This means whenever a 1 is written the magnetization (also called flux) is changed:
+
+.Vb
+\& +\-\-+        +\-\-\-\-
+\& |  |        |
+\&\-+  +\-\-\-\-\-\-\-\-+
+\& 1  1  0  0  1  0
+.Ve
+But this causes trouble if long sequences of 0's occur, because the rotation speed of a drive is not perfectly constant. Furthermore it may vary a little bit from drive to drive. So there is some other encoding method needed to limit the maximum length of consecutive 0's (which means limiting the maximum length of a flux change).
+
+.IP "FM \- Frequency Modulation" 8
+With FM every data bit is preceded by a clock bit. This means if you want to write four data bits, FM will add four clock bits (= eight bits in total). The added clock bits are always 1. For example the data bits 1001 will result in the FM stream 1110 1011 (first bit is a clock bit). Because every clock bit is 1 the maximum length of consecutive 0's is one.
+
+.Vb
+\&      +\-\-+  +\-\-\-\-\-+     +\-\-+
+\&      |  |  |     |     |  |
+\&     \-+  +\-\-+     +\-\-\-\-\-+  +\-
+\&FM    1  1  1  0  1  0  1  1
+\&
+\&Clock 1     1     1     1
+\&Data     1     0     0     1
+.Ve
+.IP "MFM \- Modified FM" 8
+The rate of the flux change is also a limiting factor to disk capacity. If a coding method is able to guarantee slower flux changes one can increase capacity. MFM is a modified version of FM. It does not always set the clock bits to 1. Instead it looks also at the data bits to decide which value the clock bit will be set to. Only if the preceding and the following data bit is 0 the clock bit will be 1, otherwise it is 0. If you want to write the seven data bits 110 0101, the resulting MFM stream is 01 0100 1001 0001. The shortest flux change in MFM is twice as long as in FM. So you may double your capacity with MFM in comparsion to FM. The maximum length of consecutive 0's is three.
+
+.Vb
+\&     \-\-\-\-+     +\-\-\-\-\-\-\-\-+        +\-\-\-\-\-\-\-\-\-\-\-+
+\&         |     |        |        |           |
+\&         +\-\-\-\-\-+        +\-\-\-\-\-\-\-\-+           +\-
+\&MFM   0  1  0  1  0  0  1  0  0  1  0  0  0  1
+\&
+\&Clock 0     0     0     1     0     0     0
+\&Data     1     1     0     0     1     0     1
+.Ve
+.IP "M2FM, MMFM \- Modified MFM (currently not implemented in \fBcwtool\fR)" 8
+The rule for the clock bits is modified again in M2FM. A clock bit in MFM is only 1 if two consecutive data bits are 0. In M2FM additionally the preceding clock bit has to be 0 for the current clock bit to be 1. The eight data bits 1101 0001 would result in the M2FM stream 0101 0001 0010 0001. The maximum length of consecutive 0's is four. The length of the shortest flux change is unchanged compared to MFM.
+
+.Vb
+\&     \-\-\-\-+     +\-\-\-\-\-\-\-\-\-\-\-+        +\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+\&         |     |           |        |              |
+\&         +\-\-\-\-\-+           +\-\-\-\-\-\-\-\-+              +\-
+\&M2FM  0  1  0  1  0  0  0  1  0  0  1  0  0  0  0  1
+\&
+\&Clock 0     0     0     0     0     1     0     0
+\&Data     1     1     0     1     0     0     0     1
+.Ve
+.IP "RLL 2.7 \- Run Length Limited (currently not implemented in \fBcwtool\fR)" 8
+In MFM the shortest flux change has one 0 followed by a 1 and the longest has three consecutive 0's followed by a 1. In RLL 2.7 the shortest has two consecutive 0's and the longest has seven consecutive 0's followed by a 1. In this sense MFM is a RLL 1.3 encoding. RLL 2.7 was never used for floppy disks, only for hard disks.
+
+The following table shows the encoding of the data bits. The table looks a little bit strange and incomplete, but it includes all possible combinations of the data bits. In the stream fragments the shortest flux change has two consecutive 0's followed by a 1. Because some RLL stream fragments have a leading 1 and all of them have two trailing 0's, the shortest flux change can not be less than two consecutive 0's followed by a 1. Combining all the RLL stream fragments will give all other possible flux change patterns.
+
+.Vb
+\&data bits | RLL stream fragment
+\&\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&  000     |     000100
+\&  0010    |     00100100
+\&  0011    |     00001000
+\&  010     |     100100
+\&  011     |     001000
+\&  10      |     0100
+\&  11      |     1000
+.Ve
+The resulting stream in FM, MFM and M2FM just interweaves the data bits with clock bits. These three encoding methods just use different rules to determine the value of the clock bits. In RLL 2.7 the data bits have no clear position in the resulting stream (look at the 10 and 11 entries in the table). This is somewhat similar to GCR.
+
+.IP "GCR \- Group Code Recording" 8
+Instead of interweaving a clock signal with the data like done in FM and MFM, GCR subdivides the data into groups of bits and encodes every group at once. Usually these groups have the size of 4 or 6 bits. The encoding guarantees that there will be not more than two consecutive 0's. For example the C1541 drive uses 5 GCR bits to encode 4 data bits (4\-to\-5 encoding). Because there is not more than one leading or trailing 0, stringing those encoded groups together will also have not more than two consecutive 0's in the resulting stream. Older Apple computers used a 6\-to\-8 encoding.
+
+.Vb
+\&data bits | C1541 GCR bits
+\&\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&   0000   |    01010
+\&   0001   |    01011
+\&   0010   |    10010
+\&   0011   |    10011
+\&   0100   |    01110
+\&   0101   |    01111
+\&   0110   |    10110
+\&   0111   |    10111
+\&   1000   |    01001
+\&   1001   |    11001
+\&   1010   |    11010
+\&   1011   |    11011
+\&   1100   |    01101
+\&   1101   |    11101
+\&   1110   |    11110
+\&   1111   |    10101
+.Ve
+.IP "SYNC\-Marker, Sector Header, Data Header" 8
+SYNC Markers are used to find the beginning of a sector (for soft sector disks). Those Markers use bit patterns not occuring in valid encoded data. For example with 4\-to\-5 GCR encoding it is not possible to generate a sequence of ten consecutive 1's. With FM encoding it is not possible to generate the pattern 1111 0101 0111 1110, because some clock bits are 0 here. But this sequence does not violate the limits of the shortest and longest flux change for FM, so it will not cause problems, when written to disk. Same for MFM with the pattern 0100 0100 1000 1001. Shortest and longest flux change are within MFM limits, but one clock bit is wrong.
+
+A sector header usually starts with a SYNC\-Marker followed by the track and sector number and a checksum. Some formats directly append the data payload after that (Amiga). Others use a separate data header with its own SYNC\-Marker for the data (C1541). This has to do with the ability to write a whole track at once. If this is not possible, the usual strategy is to first search the sector to be overwritten. If the sector header was found, the floppy drive is switched to write mode immediately and the data with its own SYNC\-Marker is written to disk.
+
+.IP "How the Catweasel controller reads a floppy disk" 8
+The Catweasel controller just measures the time between flux changes. Whenever a flux change occurs a 7 bit counter is started to count up the clock cycles until the next flux change is detected. Then the value of the counter is saved and it is reset to start the procedure again. The Catweasel controller uses built memory to store the counter values. There are three different clock frequencies the counter may use: 14.161 MHz, 28.322 MHz and 56.644 MHz. Because you have to ensure, that no counter overflow occurs, one can not freely choose a clock frequency. Usually DD floppies are read with 14.161 MHz while HD floppies are read with 28.322 MHz.
+
+If you look at the histogram of a formatted disk you should see some peaks in it. For example the track histograms of an Amiga formatted DD floppy looks like below, when using the shown command. The histogram shows how many times a certain counter value occured. In this case the histogram is shrinked a little bit for space reasons: you see the sum of two counter values. For example the values 0x1a and 0x1b are occuring about 45000 times in sum.
+
+.Vb
+\&\fBcwtool\fR \-S amiga_dd \fI<device>\fR
+\&
+\&============================================================
+\&47500
+\&45000              *
+\&42500              *
+\&40000              *
+\&37500              *
+\&35000              *
+\&32500              *
+\&30000              *
+\&27500              *
+\&25000              *
+\&22500              *
+\&20000              *      *
+\&17500              *      *
+\&15000              *      *
+\&12500              *      *
+\&10000              *      *      *
+\& 7500              *      *      *
+\& 5000              *      *      *
+\& 2500              *      *      *
+\&    0            ****    ***    ***
+\&      000000001111111122222222333333334444444455555555666666
+\&      02468ace02468ace02468ace02468ace02468ace02468ace02468a
+.Ve
+The number of peaks depends on the used encoding method. Each peak corresponds to a pattern with zero or more consecutive 0's followed by a 1 (remember: a 0 does not cause a flux change while a 1 does).
+
+.Vb
+\&           | number of peaks | possible flux change patterns
+\&\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&FM         |        2        | 1, 01
+\&MFM        |        3        | 01, 001, 0001
+\&GCR (C1541)|        3        | 1, 01, 001
+\&M2FM       |        4        | 01, 001, 0001, 00001
+\&RLL 2.7    |        6        | 001, 0001, 00001, 000001,
+\&           |                 | 0000001, 00000001
+.Ve
+The Catweasel controller has 128 KByte builtin memory (MK3, MK4, MK4+). This is enough to read or write a track of a DD or HD disk at once. It is not enough for ED disks. So you won't find support for ED formats in \fBcwtool\fR currently.
+
+Because of the high clock frequency of the counter, the Catweasel controller is able to read and write disks intended for non CAV drives (like Apple). Likewise it is also no problem to read or write disks in 360 RPM drives which where intended for 300 RPM drives.
+
+.SH AUTHOR
+Karsten Scheibler

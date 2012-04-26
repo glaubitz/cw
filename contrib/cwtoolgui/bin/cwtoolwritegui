@@ -1,0 +1,41 @@
+#!/usr/bin/kaptain
+
+start "Read/Write Amiga DD Cwtool" -> descr cwtool buttons;
+
+descr :horizontal -> title pic;
+title -> @text ("Catweasl R/W ADF Tool.");
+pic -> @icon("/usr/share/pixmaps/gnome-color-xterm.png");
+
+cwtool -> "cwtool -W " opt adf " " writeoutdev ;
+opt:framed :horizontal  -> createopt progopt ;
+
+createopt "Write options" -> verbose norcfiles ignoresize;
+progopt "Cwtool options" -> disktype;
+writeoutdev "Write Output Device" -> outputdevs;
+
+verbose "be more verbose" -> "-v " | @;
+norcfiles "do not read rc files" -> "-n " | @;
+ignoresize "ignore size" -> "-s " | @;
+
+
+disktype -> disks | @;
+disks "DiskTypes" -> amiga_dd | amiga_hd | msdos_dd | msdos_hd;
+amiga_dd "amigaDD" -> "amiga_dd ";
+amiga_hd "amigaHD" -> "amiga_hd ";
+msdos_dd "msdosDD" -> "msdos_dd ";
+msdos_hd "msdosHD" -> "msdos_hd ";
+
+outputdevs -> devs | @;
+devs "Device Number" -> cw0raw0 | cw0raw1 | cw1raw0 | cw1raw1 | cw2raw0 | cw2raw1 | cw3raw0 | cw3raw1;
+cw0raw0 "cw0raw0" -> "/dev/cw0raw0 ";
+cw0raw1 "cw0raw1" -> "/dev/cw0raw1 ";
+cw1raw0 "cw1raw0" -> "/dev/cw1raw0 ";
+cw1raw1 "cw1raw1" -> "/dev/cw1raw1 ";
+cw2raw0 "cw2raw0" -> "/dev/cw2raw0 ";
+cw2raw1 "cw2raw1" -> "/dev/cw2raw1 ";
+cw3raw0 "cw3raw0" -> "/dev/cw3raw0 ";
+cw3raw1 "cw3raw1" -> "/dev/cw3raw1 ";
+
+adf "ADF name" -> @infile;
+
+buttons :horizontal -> @action(cwtool)="OK" @close="Cancel";

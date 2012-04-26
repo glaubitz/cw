@@ -1,0 +1,205 @@
+Author:   Karsten Scheibler
+Homepage: http://unusedino.de/cw/
+eMail:    cw@unusedino.de
+
+
+  =======================
+  [1] GENERAL INFORMATION
+  =======================
+
+
+cw is (yet another) package for the Catweasel controller, look under [5] for
+other existing packages. This package is especially for accessing the floppy
+drives connected to Catweasel. Currently the MK3, MK4 and MK4+ controller
+cards are supported. cw consists of a kernel driver and a companion user
+space program (cwtool). The kernel driver should work with Linux 2.4 and 2.6.
+Look at the homepage of the manufacturer http://www.jschoenfeld.com/ for more
+details about the controller features. Please read also the man page for
+some hardware oddities you should know about, before complaining that
+something does not work as expected.
+
+
+  ============================
+  [2] SHORT BUILD INSTRUCTIONS
+  ============================
+
+
+To build cw a simple 'make' should be enough. Remember that you need the
+source of your running kernel in order to compile the driver module. cw was
+tested on x86 under different distributions with different Linux kernel
+versions (to name a few: 2.4.26, 2.4.32, 2.6.11.2 and 2.6.14.2 all directly
+taken from http://www.kernel.org/), it also succesfully compiled on
+Knoppix 4.0.2, SuSE 10.0, 10.1, 10.2, 10.3 and 11.1. There were also
+reports, that cw runs on PowerPC platforms under Linux without problems.
+
+You may build cwtool with dietlibc, just set and export the environment
+variable DIET to the location of your 'diet' binary and run 'make'. Dietlibc
+is a libc that is optimized for small size, look at
+http://www.fefe.de/dietlibc/ for more.
+
+
+  ===================================
+  [3] SHORT INSTALLATION INSTRUCTIONS
+  ===================================
+
+
+NOTE: The file conf/cwtoolrc.default contains the configuration for all
+      currently supported disk formats. This file is also compiled into
+      cwtool (comments are stripped away, you may see the contents with
+      'cwtool -D'). You may also place a customized version of this file
+      to /etc/cwtoolrc or $HOME/.cwtoolrc, so cwtool will load it on every
+      start up. But currently there is no description how such a file has
+      to look like, because the syntax may change in future versions. For
+      easy changes such as a different number of sectors per track you
+      should use conf/cwtoolrc.default as a template. But be prepared that
+      you may have to do your changes again with new versions of cwtool.
+
+NOTE: If you use devfs you have to determine yourself how to add the device
+      nodes permanently. I do not plan to add support for it, because
+      devfs is now obsolete and will be removed in future versions of the
+      kernel. Starting with cw-0.11 basic support for udev was introduced,
+      so a 'make install' should add the needed things. But as every
+      distribution handles udev a little bit different it may not work on
+      your installation (see also step 2b below)
+
+NOTE: You need to be root to do the things described below.
+
+You may use cw without calling 'make install' if you do the following steps
+manually:
+
+1a) load the module
+    # insmod module/cw.o		(Linux 2.4)
+    # insmod module/cw.ko		(Linux 2.6)
+
+1b) make sure the module was loaded correctly
+    # lsmod
+    # dmesg | tail
+    The first command prints out a list of all loaded kernel modules, the
+    second prints out kernel messages, the last lines should contain
+    messages from cw.
+
+2a) create the device nodes (up to 4 controllers are supported, every
+    controller may have up to 2 floppy drives)
+    # mknod /dev/cw0raw0 c 120 31
+    # mknod /dev/cw0raw1 c 120 63
+    # mknod /dev/cw1raw0 c 120 95
+    # mknod /dev/cw1raw1 c 120 127
+    # mknod /dev/cw2raw0 c 120 159
+    # mknod /dev/cw2raw1 c 120 191
+    # mknod /dev/cw3raw0 c 120 223
+    # mknod /dev/cw3raw1 c 120 255
+
+2b) If you use udev, add according entries to /etc/udev/static_devices.txt
+    or create device nodes manually in /lib/udev/devices or do whatever your
+    distribution needs to be done to make the device nodes permanent,
+    otherwise they will disappear with the next reboot. If you have no luck
+    with udev, just create a startscript with the above mknod lines and
+    execute it after udev was started up.
+
+3a) run cwtool to read a disk (in this case: read an Amiga 3.5" DD disk
+    from the first drive on the first controller and write it to image.adf)
+    # bin/cwtool -R -v amiga_dd /dev/cw0raw0 image.adf
+
+3b) Writing a disk is similar (in this case: write image.d64 to a C1541
+    5.25" disk in the second drive of the first controller)
+    # bin/cwtool -W -v c1541 image.d64 /dev/cw0raw1
+
+3c) Look at the man page of cwtool, to get an overview what other things
+    are possible
+    # man doc/cwtool.1
+
+If you use 'make install' to install cw then /etc/modules.conf (Linux 2.4)
+or /etc/modprobe.conf (Linux 2.6) will be modified to allow automatic module
+loading. Per default it uses char major number 120. If this major number is
+already in use (look at /proc/devices) you need to choose a different number.
+Use the command 'make install MAJOR=xx', where xx is a free char major number
+on your system. The following parameters are also possible, if these
+parameters are not specified more or less useful default values are used.
+
+BIN_DIR             - directory in which cwtool is installed
+MAN_DIR             - the man page will be copied to $MAN_DIR/man1
+MODULE_DIR          - directory in which the kernel driver module is
+                      installed
+MODULE_NAME         - the name of the module (you need to choose a different
+                      name than 'cw' if you also use the catweasel package
+		      listed in [6])
+MODULES_CONF        - full path of the modules.conf or modprobe.conf file
+                      or alternatively the modprobe.d directory if no
+		      modprobe.conf exists
+UDEV_STATIC_DEVICES - this file contains static entries for device nodes,
+                      if it exists entries suitable for cw are added
+		      (seems only to exist on SuSE 10.0)
+
+NOTE: You may use 'make upgrade' if you want to upgrade from an older
+      version of cw, but you need to specify those parameters that differ
+      from the default values. Upgrading just means overwriting cwtool, the
+      kernel module and the man page with the current versions and creating
+      device nodes if necessary. Be aware that this has not been extensively
+      tested. If possible uninstall your old version of cw and install the
+      new one.
+
+NOTE: You may use 'make uninstall' to uninstall cw, the parameters of
+      the last 'make install' call are saved and are used for uninstalling,
+      but after a 'make clean' these saved parameters will be lost.
+
+
+  =================
+  [4] CONTRIBUTIONS
+  =================
+
+
+In the contrib directory you will find a simple GUI for cwtool written by
+David Bentham (aka PegXlin DEV). If you want to use it, consult the according
+README in contrib/cwtoolgui. If you have enhancements for this GUI or other
+useful additions, please contact me under the mail address listed at the
+start of this README.
+
+If you want to use the kernel driver of cw for your own programs please have
+a look at the src/cwio directory.
+
+
+  ====================
+  [5] RELATED PROJECTS
+  ====================
+
+
+There are at least 6 other Linux drivers for the Catweasel controller:
+
+catweasel (*) - http://llg.cubic.org/cw/, written by Dirk Jagdmann. A
+	Linux driver for SID, Joysticks and Amiga keyboard. If you also want
+	to use this package together with cw, remember to set MODULE_NAME to
+	a different name, because catweasel uses the same name for the driver
+	module (see the installation instructions in [3]).
+
+cwfloppy (*) - http://www.soundtracker.org/raw/cwfloppy/, written by
+	Michael Krause. A Linux driver for accessing the floppies on a
+	Catweasel controller. This driver exports block devices, so you are
+	able to mount Amiga disks under Linux. Currently it supports Amiga
+	and MSDOS disks (and C1541 with a patch written by me). To support
+	more formats i found it more useful to use another method to export
+	data to user space, thats why i started my own driver. Instead of a
+	block device cw uses a char device and passes the raw Catweasel data
+	to the calling program, so all format routines do not reside in the
+	kernel driver anymore.
+
+hardsid (*) - http://hardsid.sourceforge.net/, written by Jarno Paananen
+	and Simon White. A Linux driver for the Hardsidcards and the
+	SID-Chips on Catweasel MK3 and MK4.
+
+hardsid-catweasel (*) - http://www.bel.fi/~alankila/blog/2005/12/30/HardSID-Catweasel%200.01.html,
+	written by Antti Lankila. This driver only contains support for
+	Catweasel MK4 cards and is a rework of the hardsid driver.
+
+cw2dmk - http://www.tim-mann.org/catweasel.html, written by Tim Mann.
+	A Linux driver (other platforms are also supported) for accessing the
+	floppies on a Catweasel Controller, especially TRS80 related formats
+	are supported. This package does not use a kernel driver to access
+	the Catweasel controller, but you should avoid using this program
+	when a kernel driver from another package is loaded.
+
+hardsec_cw - http://webpages.charter.net/thecomputercollection/hardsec_cw.tar.gz
+	adapted version of cw2dmk by Jay Jaeger especially for hard
+	sectored disks
+
+(*) Currently you may load only one kernel module accessing the
+    Catweasel controller at the same time.

@@ -1,0 +1,28 @@
+Author:   Karsten Scheibler
+Homepage: http://unusedino.de/cw/
+eMail:    cw@unusedino.de
+
+
+  =======================
+  [1] GENERAL INFORMATION
+  =======================
+
+
+cwio is part of the cw package. It provides an interface to the kernel
+driver of cw. If you plan to use the kernel driver please use cwio instead
+of making ioctls to the driver directly. While the ioctl-interface of the
+driver changes from time to time the cwio API should be stable, so a
+recompilation of your software with a new version of cw should be enough if
+you use cwio.
+
+
+  ============================
+  [2] SHORT BUILD INSTRUCTIONS
+  ============================
+
+
+Go to the example subdirectory and type 'make'. This will build two example
+programs to show the usage of cwio to read and write tracks. You may use
+the Makefile as a template. You just need to adapt the CWIO_DIR variable
+to the right place in order to get the cwio.o file compiled to your own
+project directory.

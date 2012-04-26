@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Opens cwtoolreadgui as root.
+
+foo=`gksudo -u root -k -m "enter your password for cwtoolgui root access" /bin/echo "got r00t?"`
+sudo xterm -e "kaptain /bin/cwtoolreadgui"
+

@@ -1,0 +1,2754 @@
+# default cwtoolrc with updates and fixes from Jonathan Gevaryahu
+# jgevaryahu(at)hotmail(dot)com
+#
+# Legend:
+# =======
+#
+# \ = derived from above or other
+# ? = missing format, feel free to create, test, and send to me
+#
+# Formats supported:
+# ==================
+#
+# ***GENERIC***
+#
+# clear      - clears all tracks
+# pattern_14 - writes a 14MHz pattern on all tracks 
+# pattern_28 - "      " 28MHz " ...
+# pattern_56 - "      " 56MHz " ...
+# raw_14  - raw flux dump at 14mhz unsynced
+#\raw_14i - raw flux dump at 14mhz synced to index hole
+#\raw_dd  - same as raw_14
+# raw_28  - raw flux dump at 28mhz unsynced
+#\raw_28i - raw flux dump at 28mhz synced to index hole
+#\raw_hd  - same as raw_28
+# raw_56  - raw flux dump at 56mhz unsynced
+#\raw_56i - raw flux dump at 56mhz synced to index hole
+#\raw_ed  - same as raw_56
+#
+#
+# ***COMMODORE***
+#
+# c1541      - commodore 1541 .d64 binary image with no error log 35 tracks
+#\c1541_40   - commodore 1541 .d64 binary image with no error log 40 tracks
+#\c1541_42   - commodore 1541 .d64 binary image with no error log 42 tracks
+#\c1541_d64  - commodore 1541 .d64 binary image with error log 35 tracks
+#\c1541_40_d64 - commodore 1541 .d64 binary image with error log 40 tracks
+#\c1541_42_d64 - commodore 1541 .d64 binary image with error log 42 tracks
+# c1541_g64    - commodore 1541 .g64 GCR image 35 tracks
+#\c1541_40_g64 - commodore 1541 .g64 GCR image 40 tracks
+#\c1541_42_g64 - commodore 1541 .g64 GCR image 42 tracks
+# c1541_300    - same as above but for a 300rpm drive
+#\c1541_40_300 - ditto
+#\c1541_42_300 - ditto
+#\c1541_d64_300    - ditto
+#\c1541_40_d64_300 - ditto
+#\c1541_42_d64_300 - ditto
+# c1541_g64_300    - ditto
+#\c1541_40_g64_300 - ditto
+#\c1541_42_g64_300 - ditto
+# c1571     - commodore 1571 .d71 binary image with no error log, 35 tracks DS
+#\c1571_40  - commodore 1571 .d71 binary image with no error log, 40 tracks DS
+#?c1571_42  - commodore 1571 .d71 binary image with no error log, 42 tracks DS
+#?c1571_d71 - commodore 1571 .d71 binary image with error log, 35 tracks DS
+#?c1571_40_d71 - commodore 1571 .d71 binary image with error log, 40 tracks DS
+#?c1571_42_d71 - commodore 1571 .d71 binary image with error log, 42 tracks DS
+#?c1571_g71    - commodore 1571 .g71 GCR image 35 tracks DS
+#?c1571_40_g71 - commodore 1571 .g71 GCR image 40 tracks DS
+#?c1571_42_g71 - commodore 1571 .g71 GCR image 42 tracks DS
+# c1581_dsdd - commodore 1581 3.5" .d81? image DS
+#?c1581_raw  - some sort of raw format of the above? raw mfm? not really sure...
+# amiga_dsdd_5.25 - amiga, 5.25"DSDD
+# amiga_dsdd - amiga, 3.5"DD
+# amiga_dshd - amiga, 3.5"HD
+#
+#
+# ***MS-DOS/NE765***
+#
+# msdos_ssdd_5.25 - MS-DOS 5.25"SSDD 180K
+#\msdos_dsdd_5.25 - MS-DOS 5.25"DSDD 360K
+# msdos_ssdd_8sector_5.25 - MS-DOS 5.25"SSDD 160K (needs work/calibration)
+#\msdos_dsdd_8sector_5.25 - MS-DOS 5.25"DSDD 320K (ditto)
+#
+# msdos_dshd_5.25 - MS-DOS 5.25"DSHD 1.2MB
+#?msdos_dshd_5.25_1394 - 5.25"DSHD 'FDFORMAT' format, 82 trk ? sector ? byte/sect 1394k
+#?msdos_dshd_5.25_2m_1476 - 5.25"DSHD '2M/F' format, 82 trk ? sector ?byte/sect 1476k
+#?msdos_dshd_5.25_2m_1558 - 5.25"DSHD '2M/M' format, 82 trk ? sector ?byte/sect 1558k
+#?msdos_dshd_5.25_2m_1639 - 5.25"DSHD '2MGUI' format, 82 trk ? sector ?byte/sect 1639k
+#
+# msdos_dsdd - MS-DOS 3.5"DD 80 trk 9 sector 720K
+#\atari_dsdd - ditto, same format
+#?msdos_dsdd_820     - 3.5"DD 'FDFORMAT' format, 82 trk ? sector ? byte/sect 820k
+#?msdos_dsdd_2m_984  - 3.5"DD '2M/F' format, 82 trk ? sector ?byte/sect 984k
+#?msdos_dsdd_2m_1066 - 3.5"DD '2M/M' format, 82 trk ? sector ?byte/sect 1066k
+#?msdos_dsdd_2m_1176 - 3.5"DD '2MGUI' format, 82 trk ? sector ?byte/sect 1176k
+#
+# msdos_dshd - MS-DOS 3.5"HD 80 trk 18 sector 512 byte/sect 1440K
+#\atari_dshd - ditto, same format
+#\mac_dshd   - ditto, same format
+# msdos_dshd_1476 - 3.5"HD '?' format, 82 trk 18 sector 512 byte/sect 1476K
+# msdos_dshd_1494 - 3.5"HD '?' format, 83 trk 18 sector 512 byte/sect 1494K 
+# msdos_dshd_1600 - 3.5"HD '?' format, 80 trk 20 sector 512 byte/sect 1600K
+# msdos_dshd_1680 - 3.5"HD 'DMF' format, 80 trk 21 sector 512 byte/sect 1680K
+# msdos_dshd_1722 - 3.5"HD 'FDFORMAT' format, 82 trk 21 sector 512 byte/sect 1722K
+# msdos_dshd_1743 - 3.5"HD '?' format, 83 trk 21 sector 512 byte/sect 1743K
+# msdos_dshd_1760 - 3.5"HD '?' format, 80 trk 11 sector 1024 byte/sect 1743K
+# msdos_dshd_1802 - 3.5"HD '?' format, 82 trk 11-19 sectors, 1024 byte/sect 1802K
+#?msdos_dshd_1860 - IBM OS/2 3.5"HD 'XDF' format, 1860k, variable sector size per track
+#?msdos_dshd_2m_1804 - 3.5"HD '2M/F' format, 82 trk ? sector ?byte/sect 1804k
+#?msdos_dshd_2m_1886 - 3.5"HD '2M/M' format, 82 trk ? sector ?byte/sect 1886k
+#?msdos_dshd_2m_1972 - 3.5"HD '2MGUI' format, 82 trk ? sector ?byte/sect 1972k
+#
+#?msdos_dsed - MS-DOS 3.5"ED 80 trk ?36? sector 2880K
+#?msdos_dsed_2m_3608 - 3.5"ED '2M/F' format, 82 trk ? sector ?byte/sect 3608k
+#?msdos_dsed_2m_3772 - 3.5"ED '2M/M' format, 82 trk ? sector ?byte/sect 3772k
+#?msdos_dsed_2m_3944 - 3.5"ED '2MGUI' format, 82 trk ? sector ?byte/sect 3944k
+#?cpm_sssd_5.25 - FM modulated, 10 sectors, otherwise the same as msdos_ssdd_5.25
+#?cpm_dssd_5.25 - FM modulated, 10 sectors, otherwise the same as msdos_dsdd_5.25
+#
+#
+# ***APPLE/MACINTOSH***
+#
+# mac_5.25
+# mac_5.25_300
+# mac_dsdd_800
+#\mac_dsdd
+# mac_dsdd_800_524
+#\mac_dsdd_524
+#
+#
+# ***VARIOUS OTHERS***
+#
+# ibm_dsdd        - IBM 8" floppy, FM modulation on T0S0 otherwise MFM
+# dec_rx01_sssd   - DEC RX01 8" cartridge/floppy, FM modulation
+# dg_dsdd         - Digital Group 8" floppy, MFM, 77 trks, 2 sides, 15 sec/trk
+# victor9000_dsdd - Victor9000, 5.25" floppy, GCR, 80 tracks, 2 sides, 11-19 sec/trk
+# victor9000_ssdd - Victor9000, 5.25" floppy, GCR, 80 tracks, 1 side, 12-19 sec/trk
+
+options
+	{
+	always_initialize yes	# always initialize drives with cwtool -R and
+				# and cwtool -W
+	}
+
+disk "clear"
+	{
+	info "RAW, 14 MHz, 83 trks, 2 sides, CLEARS ALL TRACKS OF A DISK"
+	format "fill"
+	clock 14
+	timeout 230
+	track_range 0 165 1 optional yes
+	}
+
+disk "pattern_14"
+	{
+	info "RAW, 14 MHz, 83 trks, 2 sides, CLEARS ALL TRACKS OF A DISK"
+	format "fill"
+	clock 14
+	timeout 420
+	indexed yes
+	write mode 1
+	track_range 0 165 1 optional yes
+	}
+
+disk "pattern_28"
+	{
+	info "RAW, 28 MHz, 83 trks, 2 sides, CLEARS ALL TRACKS OF A DISK"
+	format "fill"
+	clock 28
+	timeout 420
+	indexed yes
+	write mode 1
+	track_range 0 165 1 optional yes
+	}
+
+disk "pattern_56"
+	{
+	info "RAW, 56 MHz, 83 trks, 2 sides, CLEARS ALL TRACKS OF A DISK"
+	format "fill"
+	clock 56
+	timeout 420
+	indexed yes
+	write mode 1
+	track_range 0 165 1 optional yes
+	}
+
+disk "raw_14i"
+	{
+	info "RAW, 14 MHz, indexed, 83 trks, 2 sides"
+	format "raw"
+	image "raw"
+	clock 14
+	timeout 420
+	indexed yes
+	track_range 0 165 1 optional yes
+	}
+
+disk "raw_28i"
+	{
+	info "RAW, 28 MHz, indexed, 83 trks, 2 sides"
+	format "raw"
+	image "raw"
+	clock 28
+	timeout 420
+	indexed yes
+	track_range 0 165 1 optional yes
+	}
+
+disk "raw_56i"
+	{
+	info "RAW, 56 MHz, indexed, 83 trks, 2 sides"
+	format "raw"
+	image "raw"
+	clock 56
+	timeout 420
+	indexed yes
+	track_range 0 165 1 optional yes
+	}
+
+disk "raw_14"
+	{
+	info "RAW, 14 MHz, 83 trks, 2 sides"
+	format "raw"
+	image "raw"
+	clock 14
+	timeout 420
+	track_range 0 165 1 optional yes
+	}
+
+disk "raw_28"
+	{
+	info "RAW, 28 MHz, 83 trks, 2 sides"
+	format "raw"
+	image "raw"
+	clock 28
+	timeout 420
+	track_range 0 165 1 optional yes
+	}
+
+disk "raw_56"
+	{
+	info "RAW, 56 MHz, 83 trks, 2 sides"
+	format "raw"
+	image "raw"
+	clock 56
+	timeout 420
+	track_range 0 165 1 optional yes
+	}
+
+disk "raw_dd"
+	{
+	info "same as raw_14"
+	copy "raw_14"
+	}
+
+disk "raw_hd"
+	{
+	info "same as raw_28"
+	copy "raw_28"
+	}
+
+disk "raw_ed"
+	{
+	info "same as raw_56"
+	copy "raw_56"
+	}
+
+trackmap "c1541_d64"
+	{
+	track 0 { image_track 0 format_track 1 }
+	track 2 { }
+	track 4 { image_track 1 format_track 2 }
+	track 6 { }
+	track 8 { image_track 2 format_track 3 }
+	track 10 { }
+	track 12 { image_track 3 format_track 4 }
+	track 14 { }
+	track 16 { image_track 4 format_track 5 }
+	track 18 { }
+	track 20 { image_track 5 format_track 6 }
+	track 22 { }
+	track 24 { image_track 6 format_track 7 }
+	track 26 { }
+	track 28 { image_track 7 format_track 8 }
+	track 30 { }
+	track 32 { image_track 8 format_track 9 }
+	track 34 { }
+	track 36 { image_track 9 format_track 10 }
+	track 38 { }
+	track 40 { image_track 10 format_track 11 }
+	track 42 { }
+	track 44 { image_track 11 format_track 12 }
+	track 46 { }
+	track 48 { image_track 12 format_track 13 }
+	track 50 { }
+	track 52 { image_track 13 format_track 14 }
+	track 54 { }
+	track 56 { image_track 14 format_track 15 }
+	track 58 { }
+	track 60 { image_track 15 format_track 16 }
+	track 62 { }
+	track 64 { image_track 16 format_track 17 }
+	track 66 { }
+	track 68 { image_track 17 format_track 18 }
+	track 70 { }
+	track 72 { image_track 18 format_track 19 }
+	track 74 { }
+	track 76 { image_track 19 format_track 20 }
+	track 78 { }
+	track 80 { image_track 20 format_track 21 }
+	track 82 { }
+	track 84 { image_track 21 format_track 22 }
+	track 86 { }
+	track 88 { image_track 22 format_track 23 }
+	track 90 { }
+	track 92 { image_track 23 format_track 24 }
+	track 94 { }
+	track 96 { image_track 24 format_track 25 }
+	track 98 { }
+	track 100 { image_track 25 format_track 26 }
+	track 102 { }
+	track 104 { image_track 26 format_track 27 }
+	track 106 { }
+	track 108 { image_track 27 format_track 28 }
+	track 110 { }
+	track 112 { image_track 28 format_track 29 }
+	track 114 { }
+	track 116 { image_track 29 format_track 30 }
+	track 118 { }
+	track 120 { image_track 30 format_track 31 }
+	track 122 { }
+	track 124 { image_track 31 format_track 32 }
+	track 126 { }
+	track 128 { image_track 32 format_track 33 }
+	track 130 { }
+	track 132 { image_track 33 format_track 34 }
+	track 134 { }
+	track 136 { image_track 34 format_track 35 }
+	track 138 { }
+	track 140 { image_track 35 format_track 36 }
+	track 142 { }
+	track 144 { image_track 36 format_track 37 }
+	track 146 { }
+	track 148 { image_track 37 format_track 38 }
+	track 150 { }
+	track 152 { image_track 38 format_track 39 }
+	track 154 { }
+	track 156 { image_track 39 format_track 40 }
+	track 158 { }
+	track 160 { image_track 40 format_track 41 }
+	track 162 { }
+	track 164 { image_track 41 format_track 42 }
+	track 166 { }
+	}
+
+trackmap "c1541_g64"
+	{
+	track 0 image_track 0
+	track 2 image_track 1
+	track 4 image_track 2
+	track 6 image_track 3
+	track 8 image_track 4
+	track 10 image_track 5
+	track 12 image_track 6
+	track 14 image_track 7
+	track 16 image_track 8
+	track 18 image_track 9
+	track 20 image_track 10
+	track 22 image_track 11
+	track 24 image_track 12
+	track 26 image_track 13
+	track 28 image_track 14
+	track 30 image_track 15
+	track 32 image_track 16
+	track 34 image_track 17
+	track 36 image_track 18
+	track 38 image_track 19
+	track 40 image_track 20
+	track 42 image_track 21
+	track 44 image_track 22
+	track 46 image_track 23
+	track 48 image_track 24
+	track 50 image_track 25
+	track 52 image_track 26
+	track 54 image_track 27
+	track 56 image_track 28
+	track 58 image_track 29
+	track 60 image_track 30
+	track 62 image_track 31
+	track 64 image_track 32
+	track 66 image_track 33
+	track 68 image_track 34
+	track 70 image_track 35
+	track 72 image_track 36
+	track 74 image_track 37
+	track 76 image_track 38
+	track 78 image_track 39
+	track 80 image_track 40
+	track 82 image_track 41
+	track 84 image_track 42
+	track 86 image_track 43
+	track 88 image_track 44
+	track 90 image_track 45
+	track 92 image_track 46
+	track 94 image_track 47
+	track 96 image_track 48
+	track 98 image_track 49
+	track 100 image_track 50
+	track 102 image_track 51
+	track 104 image_track 52
+	track 106 image_track 53
+	track 108 image_track 54
+	track 110 image_track 55
+	track 112 image_track 56
+	track 114 image_track 57
+	track 116 image_track 58
+	track 118 image_track 59
+	track 120 image_track 60
+	track 122 image_track 61
+	track 124 image_track 62
+	track 126 image_track 63
+	track 128 image_track 64
+	track 130 image_track 65
+	track 132 image_track 66
+	track 134 image_track 67
+	track 136 image_track 68
+	track 138 image_track 69
+	track 140 image_track 70
+	track 142 image_track 71
+	track 144 image_track 72
+	track 146 image_track 73
+	track 148 image_track 74
+	track 150 image_track 75
+	track 152 image_track 76
+	track 154 image_track 77
+	track 156 image_track 78
+	track 158 image_track 79
+	track 160 image_track 80
+	track 162 image_track 81
+	track 164 image_track 82
+	track 166 image_track 83
+	}
+
+disk "c1541"
+	{
+	info "C1541, GCR, 5.25 inch, 35 trks, 1 side, 17-21 sec/trk, 170 K"
+	trackmap "c1541_d64"
+	image "d64_noerror"
+	clock 14
+	track_range 2 138 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	format "gcr_cbm"
+	read
+		{
+		timeout 180
+		postcomp_simple yes
+		sync_length 10
+		}
+	write
+		{
+		timeout 300
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		prolog_length 2048
+		}
+	bounds_new
+		{
+		0x0f00 0x1200 0x1c00
+		0x1d00 0x2500 0x2f00
+		0x3000 0x3800 0x4800
+		}
+	sectors 21
+	track_range 0 64 4 { }
+	bounds_new
+		{
+		0x1100 0x1400 0x1f00
+		0x2000 0x2900 0x3400
+		0x3500 0x3e00 0x5000
+		}
+	sectors 19
+	track_range 68 92 4 { }
+	bounds_new
+		{
+		0x1200 0x1500 0x2000
+		0x2100 0x2b00 0x3700
+		0x3800 0x4100 0x5000
+		}
+	sectors 18
+	track_range 96 116 4 { }
+	bounds_new
+		{
+		0x1300 0x1600 0x2200
+		0x2300 0x2d00 0x3900
+		0x3a00 0x4400 0x5000
+		}
+	sectors 17
+	track_range 120 136 4 { }
+	}
+
+disk "c1541_40"
+	{
+	info "C1541, GCR, 5.25 inch, 40 trks, 1 side, 17-21 sec/trk, 192 K"
+	copy "c1541"
+	track_range 140 156 4 { }
+	track_range 142 158 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	}
+
+disk "c1541_42"
+	{
+	info "C1541, GCR, 5.25 inch, 42 trks, 1 side, 17-21 sec/trk, 200 K"
+	copy "c1541"
+	track_range 140 164 4 { }
+	track_range 142 166 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	}
+
+disk "c1541_d64"
+	{
+	info "C1541, same as c1541 plus error info"
+	copy "c1541"
+	image "d64"
+	}
+
+disk "c1541_40_d64"
+	{
+	info "C1541, same as c1541_40 plus error info"
+	copy "c1541_40"
+	image "d64"
+	}
+
+disk "c1541_42_d64"
+	{
+	info "C1541, same as c1541_42 plus error info"
+	copy "c1541_42"
+	image "d64"
+	}
+
+disk "c1541_g64"
+	{
+	info "C1541, RAW GCR, 5.25 inch, 35 trks, 1 side"
+	trackmap "c1541_g64"
+	image "g64"
+	clock 14
+	track_range 2 138 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	format "gcr_g64"
+	strip_track yes
+	read
+		{
+		timeout 180
+		align_track yes
+		postcomp_simple yes
+		sync_length 10
+		}
+	write
+		{
+		timeout 300
+		precomp3
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		precomp2
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		precomp1
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		precomp0
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		prolog_length 2048
+		}
+	track_range 0 64 4 read speed 3
+	track_range 68 92 4 read speed 2
+	track_range 96 116 4 read speed 1
+	track_range 120 136 4 read speed 0
+	}
+
+disk "c1541_40_g64"
+	{
+	info "C1541, RAW GCR, 5.25 inch, 40 trks, 1 side"
+	copy "c1541_g64"
+	track_range 140 156 4 read speed 0
+	track_range 142 158 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	}
+
+disk "c1541_42_g64"
+	{
+	info "C1541, RAW GCR, 5.25 inch, 42 trks, 1 side"
+	copy "c1541_g64"
+	track_range 140 164 4 read speed 0
+	track_range 142 166 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	}
+
+disk "c1541_300"
+	{
+	info "C1541, same as c1541 but for 300 RPM drives"
+	trackmap "c1541_d64"
+	image "d64_noerror"
+	clock 14
+	track_range 2 138 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	format "gcr_cbm"
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		sync_length 10
+		}
+	write
+		{
+		timeout 400
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		prolog_length 2048
+		}
+	bounds_new
+		{
+		0x1300 0x1600 0x2200
+		0x2300 0x2d00 0x3800
+		0x3900 0x4300 0x5000
+		}
+	sectors 21
+	track_range 0 64 4 { }
+	bounds_new
+		{
+		0x1400 0x1800 0x2500
+		0x2600 0x3100 0x3e00
+		0x3f00 0x4b00 0x6000
+		}
+	sectors 19
+	track_range 68 92 4 { }
+	bounds_new
+		{
+		0x1500 0x1900 0x2600
+		0x2700 0x3400 0x4200
+		0x4300 0x4e00 0x6000
+		}
+	sectors 18
+	track_range 96 116 4 { }
+	bounds_new
+		{
+		0x1700 0x1b00 0x2900
+		0x2a00 0x3600 0x4400
+		0x4500 0x5200 0x6000
+		}
+	sectors 17
+	track_range 120 136 4 { }
+	}
+
+disk "c1541_40_300"
+	{
+	info "C1541, same as c1541_40 but for 300 RPM drives"
+	copy "c1541_300"
+	track_range 140 156 4 { }
+	track_range 142 158 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	}
+
+disk "c1541_42_300"
+	{
+	info "C1541, same as c1541_42 but for 300 RPM drives"
+	copy "c1541_300"
+	track_range 140 164 4 { }
+	track_range 142 166 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	}
+
+disk "c1541_d64_300"
+	{
+	info "C1541, same as c1541_d64 but for 300 RPM drives"
+	copy "c1541_300"
+	image "d64"
+	}
+
+disk "c1541_40_d64_300"
+	{
+	info "C1541, same as c1541_40_d64 but for 300 RPM drives"
+	copy "c1541_40_300"
+	image "d64"
+	}
+
+disk "c1541_42_d64_300"
+	{
+	info "C1541, same as c1541_42_d64 but for 300 RPM drives"
+	copy "c1541_42_300"
+	image "d64"
+	}
+
+disk "c1541_g64_300"
+	{
+	info "C1541, same as c1541_g64 but for 300 RPM drives"
+	trackmap "c1541_g64"
+	image "g64"
+	clock 14
+	track_range 2 138 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	format "gcr_g64"
+	strip_track yes
+	bounds3_new
+		{
+		0x1300 0x1600 0x2200
+		0x2300 0x2d00 0x3800
+		0x3900 0x4300 0x5000
+		}
+	bounds2_new
+		{
+		0x1400 0x1800 0x2500
+		0x2600 0x3100 0x3e00
+		0x3f00 0x4b00 0x6000
+		}
+	bounds1_new
+		{
+		0x1500 0x1900 0x2600
+		0x2700 0x3400 0x4200
+		0x4300 0x4e00 0x6000
+		}
+	bounds0_new
+		{
+		0x1700 0x1b00 0x2900
+		0x2a00 0x3600 0x4400
+		0x4500 0x5200 0x6000
+		}
+	read
+		{
+		timeout 230
+		align_track yes
+		postcomp_simple yes
+		sync_length 10
+		}
+	write
+		{
+		timeout 400
+		precomp3
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		precomp2
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		precomp1
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		precomp0
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		prolog_length 2048
+		}
+	track_range 0 64 4 read speed 3
+	track_range 68 92 4 read speed 2
+	track_range 96 116 4 read speed 1
+	track_range 120 136 4 read speed 0
+	}
+
+disk "c1541_40_g64_300"
+	{
+	info "C1541, same as c1541_40_g64 but for 300 RPM drives"
+	copy "c1541_g64_300"
+	track_range 140 156 4 read speed 0
+	track_range 142 158 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	}
+
+disk "c1541_42_g64_300"
+	{
+	info "C1541, same as c1541_42_g64 but for 300 RPM drives"
+	copy "c1541_g64_300"
+	track_range 140 164 4 read speed 0
+	track_range 142 166 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	}
+
+trackmap "c1571_d64"
+	{
+	track 0 { image_track 0 format_track 1 }
+	track 2 { }
+	track 4 { image_track 1 format_track 2 }
+	track 6 { }
+	track 8 { image_track 2 format_track 3 }
+	track 10 { }
+	track 12 { image_track 3 format_track 4 }
+	track 14 { }
+	track 16 { image_track 4 format_track 5 }
+	track 18 { }
+	track 20 { image_track 5 format_track 6 }
+	track 22 { }
+	track 24 { image_track 6 format_track 7 }
+	track 26 { }
+	track 28 { image_track 7 format_track 8 }
+	track 30 { }
+	track 32 { image_track 8 format_track 9 }
+	track 34 { }
+	track 36 { image_track 9 format_track 10 }
+	track 38 { }
+	track 40 { image_track 10 format_track 11 }
+	track 42 { }
+	track 44 { image_track 11 format_track 12 }
+	track 46 { }
+	track 48 { image_track 12 format_track 13 }
+	track 50 { }
+	track 52 { image_track 13 format_track 14 }
+	track 54 { }
+	track 56 { image_track 14 format_track 15 }
+	track 58 { }
+	track 60 { image_track 15 format_track 16 }
+	track 62 { }
+	track 64 { image_track 16 format_track 17 }
+	track 66 { }
+	track 68 { image_track 17 format_track 18 }
+	track 70 { }
+	track 72 { image_track 18 format_track 19 }
+	track 74 { }
+	track 76 { image_track 19 format_track 20 }
+	track 78 { }
+	track 80 { image_track 20 format_track 21 }
+	track 82 { }
+	track 84 { image_track 21 format_track 22 }
+	track 86 { }
+	track 88 { image_track 22 format_track 23 }
+	track 90 { }
+	track 92 { image_track 23 format_track 24 }
+	track 94 { }
+	track 96 { image_track 24 format_track 25 }
+	track 98 { }
+	track 100 { image_track 25 format_track 26 }
+	track 102 { }
+	track 104 { image_track 26 format_track 27 }
+	track 106 { }
+	track 108 { image_track 27 format_track 28 }
+	track 110 { }
+	track 112 { image_track 28 format_track 29 }
+	track 114 { }
+	track 116 { image_track 29 format_track 30 }
+	track 118 { }
+	track 120 { image_track 30 format_track 31 }
+	track 122 { }
+	track 124 { image_track 31 format_track 32 }
+	track 126 { }
+	track 128 { image_track 32 format_track 33 }
+	track 130 { }
+	track 132 { image_track 33 format_track 34 }
+	track 134 { }
+	track 136 { image_track 34 format_track 35 }
+	track 138 { }
+	track 1 { image_track 35 format_track 36 }
+	track 3 { }
+	track 5 { image_track 36 format_track 37 }
+	track 7 { }
+	track 9 { image_track 37 format_track 38 }
+	track 11 { }
+	track 13 { image_track 38 format_track 39 }
+	track 15 { }
+	track 17 { image_track 39 format_track 40 }
+	track 19 { }
+	track 21 { image_track 40 format_track 41 }
+	track 23 { }
+	track 25 { image_track 41 format_track 42 }
+	track 27 { }
+	track 29 { image_track 42 format_track 43 }
+	track 31 { }
+	track 33 { image_track 43 format_track 44 }
+	track 35 { }
+	track 37 { image_track 44 format_track 45 }
+	track 39 { }
+	track 41 { image_track 45 format_track 46 }
+	track 43 { }
+	track 45 { image_track 46 format_track 47 }
+	track 47 { }
+	track 49 { image_track 47 format_track 48 }
+	track 51 { }
+	track 53 { image_track 48 format_track 49 }
+	track 55 { }
+	track 57 { image_track 49 format_track 50 }
+	track 59 { }
+	track 61 { image_track 50 format_track 51 }
+	track 63 { }
+	track 65 { image_track 51 format_track 52 }
+	track 67 { }
+	track 69 { image_track 52 format_track 53 }
+	track 71 { }
+	track 73 { image_track 53 format_track 54 }
+	track 75 { }
+	track 77 { image_track 54 format_track 55 }
+	track 79 { }
+	track 81 { image_track 55 format_track 56 }
+	track 83 { }
+	track 85 { image_track 56 format_track 57 }
+	track 87 { }
+	track 89 { image_track 57 format_track 58 }
+	track 91 { }
+	track 93 { image_track 58 format_track 59 }
+	track 95 { }
+	track 97 { image_track 59 format_track 60 }
+	track 99 { }
+	track 101 { image_track 60 format_track 61 }
+	track 103 { }
+	track 105 { image_track 61 format_track 62 }
+	track 107 { }
+	track 109 { image_track 62 format_track 63 }
+	track 111 { }
+	track 113 { image_track 63 format_track 64 }
+	track 115 { }
+	track 117 { image_track 64 format_track 65 }
+	track 119 { }
+	track 121 { image_track 65 format_track 66 }
+	track 123 { }
+	track 125 { image_track 66 format_track 67 }
+	track 127 { }
+	track 129 { image_track 67 format_track 68 }
+	track 131 { }
+	track 133 { image_track 68 format_track 69 }
+	track 135 { }
+	track 137 { image_track 69 format_track 70 }
+	track 139 { }
+	}
+
+trackmap "c1571_40_d64"
+	{
+	track 0 { image_track 0 format_track 1 }
+	track 2 { }
+	track 4 { image_track 1 format_track 2 }
+	track 6 { }
+	track 8 { image_track 2 format_track 3 }
+	track 10 { }
+	track 12 { image_track 3 format_track 4 }
+	track 14 { }
+	track 16 { image_track 4 format_track 5 }
+	track 18 { }
+	track 20 { image_track 5 format_track 6 }
+	track 22 { }
+	track 24 { image_track 6 format_track 7 }
+	track 26 { }
+	track 28 { image_track 7 format_track 8 }
+	track 30 { }
+	track 32 { image_track 8 format_track 9 }
+	track 34 { }
+	track 36 { image_track 9 format_track 10 }
+	track 38 { }
+	track 40 { image_track 10 format_track 11 }
+	track 42 { }
+	track 44 { image_track 11 format_track 12 }
+	track 46 { }
+	track 48 { image_track 12 format_track 13 }
+	track 50 { }
+	track 52 { image_track 13 format_track 14 }
+	track 54 { }
+	track 56 { image_track 14 format_track 15 }
+	track 58 { }
+	track 60 { image_track 15 format_track 16 }
+	track 62 { }
+	track 64 { image_track 16 format_track 17 }
+	track 66 { }
+	track 68 { image_track 17 format_track 18 }
+	track 70 { }
+	track 72 { image_track 18 format_track 19 }
+	track 74 { }
+	track 76 { image_track 19 format_track 20 }
+	track 78 { }
+	track 80 { image_track 20 format_track 21 }
+	track 82 { }
+	track 84 { image_track 21 format_track 22 }
+	track 86 { }
+	track 88 { image_track 22 format_track 23 }
+	track 90 { }
+	track 92 { image_track 23 format_track 24 }
+	track 94 { }
+	track 96 { image_track 24 format_track 25 }
+	track 98 { }
+	track 100 { image_track 25 format_track 26 }
+	track 102 { }
+	track 104 { image_track 26 format_track 27 }
+	track 106 { }
+	track 108 { image_track 27 format_track 28 }
+	track 110 { }
+	track 112 { image_track 28 format_track 29 }
+	track 114 { }
+	track 116 { image_track 29 format_track 30 }
+	track 118 { }
+	track 120 { image_track 30 format_track 31 }
+	track 122 { }
+	track 124 { image_track 31 format_track 32 }
+	track 126 { }
+	track 128 { image_track 32 format_track 33 }
+	track 130 { }
+	track 132 { image_track 33 format_track 34 }
+	track 134 { }
+	track 136 { image_track 34 format_track 35 }
+	track 138 { }
+	track 140 { image_track 35 format_track 36 }
+	track 142 { }
+	track 144 { image_track 36 format_track 37 }
+	track 146 { }
+	track 148 { image_track 37 format_track 38 }
+	track 150 { }
+	track 152 { image_track 38 format_track 39 }
+	track 154 { }
+	track 156 { image_track 39 format_track 40 }
+	track 158 { }
+	track 1 { image_track 40 format_track 41 }
+	track 3 { }
+	track 5 { image_track 41 format_track 42 }
+	track 7 { }
+	track 9 { image_track 42 format_track 43 }
+	track 11 { }
+	track 13 { image_track 43 format_track 44 }
+	track 15 { }
+	track 17 { image_track 44 format_track 45 }
+	track 19 { }
+	track 21 { image_track 45 format_track 46 }
+	track 23 { }
+	track 25 { image_track 46 format_track 47 }
+	track 27 { }
+	track 29 { image_track 47 format_track 48 }
+	track 31 { }
+	track 33 { image_track 48 format_track 49 }
+	track 35 { }
+	track 37 { image_track 49 format_track 50 }
+	track 39 { }
+	track 41 { image_track 50 format_track 51 }
+	track 43 { }
+	track 45 { image_track 51 format_track 52 }
+	track 47 { }
+	track 49 { image_track 52 format_track 53 }
+	track 51 { }
+	track 53 { image_track 53 format_track 54 }
+	track 55 { }
+	track 57 { image_track 54 format_track 55 }
+	track 59 { }
+	track 61 { image_track 55 format_track 56 }
+	track 63 { }
+	track 65 { image_track 56 format_track 57 }
+	track 67 { }
+	track 69 { image_track 57 format_track 58 }
+	track 71 { }
+	track 73 { image_track 58 format_track 59 }
+	track 75 { }
+	track 77 { image_track 59 format_track 60 }
+	track 79 { }
+	track 81 { image_track 60 format_track 61 }
+	track 83 { }
+	track 85 { image_track 61 format_track 62 }
+	track 87 { }
+	track 89 { image_track 62 format_track 63 }
+	track 91 { }
+	track 93 { image_track 63 format_track 64 }
+	track 95 { }
+	track 97 { image_track 64 format_track 65 }
+	track 99 { }
+	track 101 { image_track 65 format_track 66 }
+	track 103 { }
+	track 105 { image_track 66 format_track 67 }
+	track 107 { }
+	track 109 { image_track 67 format_track 68 }
+	track 111 { }
+	track 113 { image_track 68 format_track 69 }
+	track 115 { }
+	track 117 { image_track 69 format_track 70 }
+	track 119 { }
+	track 121 { image_track 70 format_track 71 }
+	track 123 { }
+	track 125 { image_track 71 format_track 72 }
+	track 127 { }
+	track 129 { image_track 72 format_track 73 }
+	track 131 { }
+	track 133 { image_track 73 format_track 74 }
+	track 135 { }
+	track 137 { image_track 74 format_track 75 }
+	track 139 { }
+	track 141 { image_track 75 format_track 76 }
+	track 143 { }
+	track 145 { image_track 76 format_track 77 }
+	track 147 { }
+	track 149 { image_track 77 format_track 78 }
+	track 151 { }
+	track 153 { image_track 78 format_track 79 }
+	track 155 { }
+	track 157 { image_track 79 format_track 80 }
+	track 159 { }
+	}
+
+disk "c1571"
+	{
+	info "C1571, GCR, 5.25 inch, 35 trks, 2 sides, 17-21 sec/trk, 341 K"
+	trackmap "c1571_d64"
+	image "d64_noerror"
+	clock 14
+	format "fill"
+	optional yes
+	write fill_length 16384
+	track_range 2 138 4 { }
+	track_range 3 139 4 { }
+	format "gcr_cbm"
+	read
+		{
+		timeout 180
+		postcomp_simple yes
+		sync_length 10
+		}
+	write
+		{
+		timeout 300
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		prolog_length 2048
+		}
+	bounds_new
+		{
+		0x0f00 0x1200 0x1c00
+		0x1d00 0x2500 0x2f00
+		0x3000 0x3800 0x4800
+		}
+	sectors 21
+	track_range 0 64 4 { }
+	track_range 1 65 4 { }
+	bounds_new
+		{
+		0x1100 0x1400 0x1f00
+		0x2000 0x2900 0x3400
+		0x3500 0x3e00 0x5000
+		}
+	sectors 19
+	track_range 68 92 4 { }
+	track_range 69 93 4 { }
+	bounds_new
+		{
+		0x1200 0x1500 0x2000
+		0x2100 0x2b00 0x3700
+		0x3800 0x4100 0x5000
+		}
+	sectors 18
+	track_range 96 116 4 { }
+	track_range 97 117 4 { }
+	bounds_new
+		{
+		0x1300 0x1600 0x2200
+		0x2300 0x2d00 0x3900
+		0x3a00 0x4400 0x5000
+		}
+	sectors 17
+	track_range 120 136 4 { }
+	track_range 121 137 4 { }
+	}
+
+disk "c1571_40"
+	{
+	info "C1571, GCR, 5.25 inch, 40 trks, 2 sides, 17-21 sec/trk, 384 K"
+	copy "c1571"
+	trackmap "c1571_40_d64"
+	track_range 140 156 4 { }
+	track_range 141 157 4 { }
+	format "fill"
+	optional yes
+	write fill_length 16384
+	track_range 142 158 4 { }
+	track_range 143 159 4 { }
+	}
+
+disk "c1581_dsdd"
+	{
+#	info "C1581, MFM, 3.5  inch, 80 trks, 2 sides, 10 sec/trk, 800 K"
+	info "C1581, MFM, 3.5  inch, 80 trks, 2 sides, *** UNTESTED ***"
+	format "mfm_nec765"
+	clock 14
+	sectors 10
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	flip_side yes
+	track_range 0 159 1 write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		}
+	}
+
+disk "c1581_dd"
+	{
+	info "same as c1581_dsdd"
+	copy "c1581_dsdd"
+	}
+
+disk "amiga_dsdd_5.25"
+	{
+	info "Amiga, MFM, 5.25 inch, 80 trks, 2 sides, 11 sec/trk, 880 K"
+	format "mfm_amiga"
+	clock 14
+	sectors 11
+	read
+		{
+		timeout 190
+		postcomp_simple yes
+		}
+	bounds_new
+		{
+		0x1100 0x15c4 0x1c00
+		0x1d00 0x2192 0x2700
+		0x2800 0x2d5e 0x4000
+		}
+	track_range 0 159 1 write
+		{
+		timeout 300
+		prolog_length 1024
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		}
+	}
+
+disk "amiga_dsdd"
+	{
+	info "Amiga, MFM, 3.5  inch, 80 trks, 2 sides, 11 sec/trk, 880 K"
+	format "mfm_amiga"
+	clock 14
+	sectors 11
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	track_range 0 159 1 write
+		{
+		timeout 300
+		prolog_length 1024
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		}
+	}
+
+disk "amiga_dshd"
+	{
+	info "Amiga, MFM, 3.5  inch, 80 trks, 2 sides, 22 sec/trk, 1660 K"
+	format "mfm_amiga"
+	clock 28
+	sectors 22
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	track_range 0 159 1 write
+		{
+		timeout 300
+		prolog_length 2048
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		}
+	}
+
+disk "amiga_dd_5.25"
+	{
+	info "same as amiga_dsdd_5.25"
+	copy "amiga_dsdd_5.25"
+	}
+
+disk "amiga_dd"
+	{
+	info "same as amiga_dsdd"
+	copy "amiga_dsdd"
+	}
+
+disk "amiga_hd"
+	{
+	info "same as amiga_dshd"
+	copy "amiga_dshd"
+	}
+
+trackmap "msdos_40_plain"
+	{
+	track 0 { image_track 0 format_track 0 format_side 0 }
+	track 1 { image_track 1 format_track 0 format_side 1 }
+	track 2 { }
+	track 3 { }
+	track 4 { image_track 2 format_track 1 format_side 0 }
+	track 5 { image_track 3 format_track 1 format_side 1 }
+	track 6 { }
+	track 7 { }
+	track 8 { image_track 4 format_track 2 format_side 0 }
+	track 9 { image_track 5 format_track 2 format_side 1 }
+	track 10 { }
+	track 11 { }
+	track 12 { image_track 6 format_track 3 format_side 0 }
+	track 13 { image_track 7 format_track 3 format_side 1 }
+	track 14 { }
+	track 15 { }
+	track 16 { image_track 8 format_track 4 format_side 0 }
+	track 17 { image_track 9 format_track 4 format_side 1 }
+	track 18 { }
+	track 19 { }
+	track 20 { image_track 10 format_track 5 format_side 0 }
+	track 21 { image_track 11 format_track 5 format_side 1 }
+	track 22 { }
+	track 23 { }
+	track 24 { image_track 12 format_track 6 format_side 0 }
+	track 25 { image_track 13 format_track 6 format_side 1 }
+	track 26 { }
+	track 27 { }
+	track 28 { image_track 14 format_track 7 format_side 0 }
+	track 29 { image_track 15 format_track 7 format_side 1 }
+	track 30 { }
+	track 31 { }
+	track 32 { image_track 16 format_track 8 format_side 0 }
+	track 33 { image_track 17 format_track 8 format_side 1 }
+	track 34 { }
+	track 35 { }
+	track 36 { image_track 18 format_track 9 format_side 0 }
+	track 37 { image_track 19 format_track 9 format_side 1 }
+	track 38 { }
+	track 39 { }
+	track 40 { image_track 20 format_track 10 format_side 0 }
+	track 41 { image_track 21 format_track 10 format_side 1 }
+	track 42 { }
+	track 43 { }
+	track 44 { image_track 22 format_track 11 format_side 0 }
+	track 45 { image_track 23 format_track 11 format_side 1 }
+	track 46 { }
+	track 47 { }
+	track 48 { image_track 24 format_track 12 format_side 0 }
+	track 49 { image_track 25 format_track 12 format_side 1 }
+	track 50 { }
+	track 51 { }
+	track 52 { image_track 26 format_track 13 format_side 0 }
+	track 53 { image_track 27 format_track 13 format_side 1 }
+	track 54 { }
+	track 55 { }
+	track 56 { image_track 28 format_track 14 format_side 0 }
+	track 57 { image_track 29 format_track 14 format_side 1 }
+	track 58 { }
+	track 59 { }
+	track 60 { image_track 30 format_track 15 format_side 0 }
+	track 61 { image_track 31 format_track 15 format_side 1 }
+	track 62 { }
+	track 63 { }
+	track 64 { image_track 32 format_track 16 format_side 0 }
+	track 65 { image_track 33 format_track 16 format_side 1 }
+	track 66 { }
+	track 67 { }
+	track 68 { image_track 34 format_track 17 format_side 0 }
+	track 69 { image_track 35 format_track 17 format_side 1 }
+	track 70 { }
+	track 71 { }
+	track 72 { image_track 36 format_track 18 format_side 0 }
+	track 73 { image_track 37 format_track 18 format_side 1 }
+	track 74 { }
+	track 75 { }
+	track 76 { image_track 38 format_track 19 format_side 0 }
+	track 77 { image_track 39 format_track 19 format_side 1 }
+	track 78 { }
+	track 79 { }
+	track 80 { image_track 40 format_track 20 format_side 0 }
+	track 81 { image_track 41 format_track 20 format_side 1 }
+	track 82 { }
+	track 83 { }
+	track 84 { image_track 42 format_track 21 format_side 0 }
+	track 85 { image_track 43 format_track 21 format_side 1 }
+	track 86 { }
+	track 87 { }
+	track 88 { image_track 44 format_track 22 format_side 0 }
+	track 89 { image_track 45 format_track 22 format_side 1 }
+	track 90 { }
+	track 91 { }
+	track 92 { image_track 46 format_track 23 format_side 0 }
+	track 93 { image_track 47 format_track 23 format_side 1 }
+	track 94 { }
+	track 95 { }
+	track 96 { image_track 48 format_track 24 format_side 0 }
+	track 97 { image_track 49 format_track 24 format_side 1 }
+	track 98 { }
+	track 99 { }
+	track 100 { image_track 50 format_track 25 format_side 0 }
+	track 101 { image_track 51 format_track 25 format_side 1 }
+	track 102 { }
+	track 103 { }
+	track 104 { image_track 52 format_track 26 format_side 0 }
+	track 105 { image_track 53 format_track 26 format_side 1 }
+	track 106 { }
+	track 107 { }
+	track 108 { image_track 54 format_track 27 format_side 0 }
+	track 109 { image_track 55 format_track 27 format_side 1 }
+	track 110 { }
+	track 111 { }
+	track 112 { image_track 56 format_track 28 format_side 0 }
+	track 113 { image_track 57 format_track 28 format_side 1 }
+	track 114 { }
+	track 115 { }
+	track 116 { image_track 58 format_track 29 format_side 0 }
+	track 117 { image_track 59 format_track 29 format_side 1 }
+	track 118 { }
+	track 119 { }
+	track 120 { image_track 60 format_track 30 format_side 0 }
+	track 121 { image_track 61 format_track 30 format_side 1 }
+	track 122 { }
+	track 123 { }
+	track 124 { image_track 62 format_track 31 format_side 0 }
+	track 125 { image_track 63 format_track 31 format_side 1 }
+	track 126 { }
+	track 127 { }
+	track 128 { image_track 64 format_track 32 format_side 0 }
+	track 129 { image_track 65 format_track 32 format_side 1 }
+	track 130 { }
+	track 131 { }
+	track 132 { image_track 66 format_track 33 format_side 0 }
+	track 133 { image_track 67 format_track 33 format_side 1 }
+	track 134 { }
+	track 135 { }
+	track 136 { image_track 68 format_track 34 format_side 0 }
+	track 137 { image_track 69 format_track 34 format_side 1 }
+	track 138 { }
+	track 139 { }
+	track 140 { image_track 70 format_track 35 format_side 0 }
+	track 141 { image_track 71 format_track 35 format_side 1 }
+	track 142 { }
+	track 143 { }
+	track 144 { image_track 72 format_track 36 format_side 0 }
+	track 145 { image_track 73 format_track 36 format_side 1 }
+	track 146 { }
+	track 147 { }
+	track 148 { image_track 74 format_track 37 format_side 0 }
+	track 149 { image_track 75 format_track 37 format_side 1 }
+	track 150 { }
+	track 151 { }
+	track 152 { image_track 76 format_track 38 format_side 0 }
+	track 153 { image_track 77 format_track 38 format_side 1 }
+	track 154 { }
+	track 155 { }
+	track 156 { image_track 78 format_track 39 format_side 0 }
+	track 157 { image_track 79 format_track 39 format_side 1 }
+	track 158 { }
+	track 159 { }
+	}
+
+disk "msdos_ssdd_8sector_5.25"
+	{
+#       info "MSDOS, MFM, 5.25 inch, 40 trks, 1 side, 8 sec/trk, 160 K"
+	info "MSDOS, MFM, 5.25 inch, 40 trks, 1 side, *** UNTESTED ***"
+	trackmap "msdos_40_plain"
+	format "mfm_nec765"
+	clock 14
+	track_range 2 158 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	sectors 8
+	read
+		{
+		timeout 190
+		postcomp_simple yes
+		}
+	bounds_new
+		{
+		0x0800 0x15c4 0x1c00
+		0x1d00 0x2192 0x2700
+		0x2800 0x2d5e 0x4000
+		}
+	write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		epilog_length 1024
+		}
+	track_range 0 156 4 { }
+	}
+
+disk "msdos_dsdd_8sector_5.25"
+	{
+#	info "MSDOS, MFM, 5.25 inch, 40 trks, 2 sides, 8 sec/trk, 320 K"
+	info "MSDOS, MFM, 5.25 inch, 40 trks, 2 sides, *** UNTESTED ***"
+	copy "msdos_ssdd_8sector_5.25"
+	track_range 1 157 4 { }
+	track_range 3 159 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	}
+
+disk "msdos_ssdd_5.25"
+	{
+#	info "MSDOS, MFM, 5.25 inch, 40 trks, 1 side, 9 sec/trk, 180 K"
+	info "MSDOS, MFM, 5.25 inch, 40 trks, 1 side, *** UNTESTED ***"
+	trackmap "msdos_40_plain"
+	format "mfm_nec765"
+	clock 14
+	track_range 2 158 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	sectors 9
+	read
+		{
+		timeout 190
+		postcomp_simple yes
+		}
+	bounds_new
+		{
+		0x0800 0x15c4 0x1c00
+		0x1d00 0x2192 0x2700
+		0x2800 0x2d5e 0x4000
+		}
+	write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		epilog_length 1024
+		}
+	track_range 0 156 4 { }
+	}
+
+disk "msdos_dsdd_5.25"
+	{
+#	info "MSDOS, MFM, 5.25 inch, 40 trks, 2 sides, 9 sec/trk, 360 K"
+	info "MSDOS, MFM, 5.25 inch, 40 trks, 2 sides, *** UNTESTED ***"
+	copy "msdos_ssdd_5.25"
+	track_range 1 157 4 { }
+	track_range 3 159 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	}
+
+disk "msdos_dshd_5.25"
+	{
+	info "MSDOS, MFM, 5.25 inch, 80 trks, 2 sides, 15 sec/trk, 1200 K"
+	format "mfm_nec765"
+	clock 28
+	sectors 15
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	track_range 0 159 1 write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		epilog_length 2048
+		}
+	}
+
+disk "msdos_dsdd"
+	{
+	info "MSDOS, MFM, 3.5  inch, 80 trks, 2 sides, 9 sec/trk, 720 K"
+	format "mfm_nec765"
+	clock 14
+	sectors 9
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	track_range 0 159 1 write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		epilog_length 1024
+		}
+	}
+
+disk "msdos_dshd"
+	{
+	info "MSDOS, MFM, 3.5  inch, 80 trks, 2 sides, 18 sec/trk, 1440 K"
+	format "mfm_nec765"
+	clock 28
+	sectors 18
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	track_range 0 159 1 write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		epilog_length 2048
+		}
+	}
+
+disk "msdos_dshd_1476"
+	{
+	info "MSDOS, MFM, 3.5  inch, 82 trks, 2 sides, 18 sec/trk, 1476 K"
+	format "mfm_nec765"
+	clock 28
+	sectors 18
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	track_range 0 163 1 write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		epilog_length 2048
+		}
+	}
+
+disk "msdos_dshd_1494"
+	{
+	info "MSDOS, MFM, 3.5  inch, 83 trks, 2 sides, 18 sec/trk, 1494 K"
+	format "mfm_nec765"
+	clock 28
+	sectors 18
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	track_range 0 165 1 write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		epilog_length 2048
+		}
+	}
+
+disk "msdos_dshd_1600"
+	{
+	info "MSDOS, MFM, 3.5  inch, 80 trks, 2 sides, 20 sec/trk, 1600 K"
+	format "mfm_nec765"
+	clock 28
+	sectors 20
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	track_range 0 159 1 write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		fill_length2 44
+		epilog_length 2048
+		}
+	}
+
+disk "msdos_dshd_1680"
+	{
+	info "MSDOS, MFM, 3.5  inch, 80 trks, 2 sides, 21 sec/trk, 1680 K"
+	format "mfm_nec765"
+	clock 28
+	sectors 21
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	track_range 0 159 1 write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		fill_length2 12
+		epilog_length 2048
+		}
+	}
+
+disk "msdos_dshd_1722"
+	{
+	info "MSDOS, MFM, 3.5  inch, 82 trks, 2 sides, 21 sec/trk, 1722 K"
+	format "mfm_nec765"
+	clock 28
+	sectors 21
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	track_range 0 163 1 write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		fill_length2 12
+		epilog_length 2048
+		}
+	}
+
+disk "msdos_dshd_1743"
+	{
+	info "MSDOS, MFM, 3.5  inch, 83 trks, 2 sides, 21 sec/trk, 1743 K"
+	format "mfm_nec765"
+	clock 28
+	sectors 21
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	track_range 0 165 1 write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		fill_length2 12
+		epilog_length 2048
+		}
+	}
+
+disk "msdos_dshd_1760"
+	{
+	info "MSDOS, MFM, 3.5  inch, 80 trks, 2 sides, 11 sec/trk, 1760 K"
+	format "mfm_nec765"
+	clock 28
+	sectors 11
+	sector_sizes
+		{
+		1024 1024 1024 1024 1024 1024
+		1024 1024 1024 1024 1024
+		}
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	track_range 0 159 1 write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		fill_length2 40
+		epilog_length 2048
+		}
+	}
+
+disk "msdos_dshd_1802"
+	{
+	info "MSDOS, MFM, 3.5  inch, 82 trks, 2 sides, 11-19 sec/trk, 1802 K"
+	format "mfm_nec765"
+	clock 28
+	read
+		{
+		timeout 230
+		postcomp_simple yes
+		}
+	write
+		{
+		timeout 500
+		indexed yes
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		fill_length2 40
+		epilog_length 2048
+		}
+	track 0 sectors 19
+	sectors 11
+	sector_sizes
+		{
+		1024 1024 1024 1024 1024 1024
+		1024 1024 1024 1024 1024
+		}
+	track_range 1 163 1 { }
+	}
+
+disk "msdos_dd_5.25"
+	{
+	info "same as msdos_dsdd_5.25"
+	copy "msdos_dsdd_5.25"
+	}
+
+disk "msdos_hd_5.25"
+	{
+	info "same as msdos_dshd_5.25"
+	copy "msdos_dshd_5.25"
+	}
+
+disk "msdos_dd"
+	{
+	info "same as msdos_dsdd"
+	copy "msdos_dsdd"
+	}
+
+disk "msdos_hd"
+	{
+	info "same as msdos_dshd"
+	copy "msdos_dshd"
+	}
+
+disk "msdos_hd_1476"
+	{
+	info "same as msdos_dshd_1476"
+	copy "msdos_dshd_1476"
+	}
+
+disk "msdos_hd_1494"
+	{
+	info "same as msdos_dshd_1494"
+	copy "msdos_dshd_1494"
+	}
+
+disk "msdos_hd_1600"
+	{
+	info "same as msdos_dshd_1600"
+	copy "msdos_dshd_1600"
+	}
+
+disk "msdos_hd_1680"
+	{
+	info "same as msdos_dshd_1680"
+	copy "msdos_dshd_1680"
+	}
+
+disk "msdos_hd_1722"
+	{
+	info "same as msdos_dshd_1722"
+	copy "msdos_dshd_1722"
+	}
+
+disk "msdos_hd_1743"
+	{
+	info "same as msdos_dshd_1743"
+	copy "msdos_dshd_1743"
+	}
+
+disk "msdos_hd_1760"
+	{
+	info "same as msdos_dshd_1760"
+	copy "msdos_dshd_1760"
+	}
+
+disk "msdos_hd_1802"
+	{
+	info "same as msdos_dshd_1802"
+	copy "msdos_dshd_1802"
+	}
+
+disk "atari_dsdd"
+	{
+	info "same as msdos_dsdd"
+	copy "msdos_dsdd"
+	}
+
+disk "atari_dd"
+	{
+	info "same as msdos_dsdd"
+	copy "msdos_dsdd"
+	}
+
+disk "atari_dshd"
+	{
+	info "same as msdos_dshd"
+	copy "msdos_dshd"
+	}
+
+disk "atari_hd"
+	{
+	info "same as msdos_dshd"
+	copy "msdos_dshd"
+	}
+
+disk "mac_5.25"
+	{
+	info "Apple, GCR, 5.25 inch, 35 trks, 1 side, 16 sec/trk, 140 K"
+	clock 14
+	track_range 2 134 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	format "gcr_apple"
+	sectors 16
+	read
+		{
+		timeout 190
+		postcomp_simple yes
+		}
+	write
+		{
+		timeout 300
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		fill_length1 23
+		fill_length2 7
+		}
+	bounds_new
+		{
+		0x0800 0x1500 0x2200
+		0x2300 0x2c00 0x3900
+		0x3a00 0x4200 0x5000
+		}
+	track_range 0 136 4 { }
+	}
+
+disk "mac_5.25_300"
+	{
+	info "Apple, same as mac_5.25 but for 300 RPM drives"
+	clock 14
+	track_range 2 134 4
+		{
+		format "fill"
+		optional yes
+		write fill_length 16384
+		}
+	format "gcr_apple"
+	sectors 16
+	read
+		{
+		timeout 240
+		postcomp_simple yes
+		}
+	write
+		{
+		timeout 400
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		fill_length1 23
+		fill_length2 7
+		}
+	bounds_new
+		{
+		0x0800 0x1a00 0x2900
+		0x2a00 0x3500 0x4400
+		0x4500 0x5100 0x6000
+		}
+	track_range 0 136 4 { }
+	}
+
+disk "mac_dsdd_800"
+	{
+	info "Apple, GCR, 3.5  inch, 80 trks, 2 sides, 8-12 sec/trk, 800K"
+	format "gcr_apple"
+	clock 14
+	mode 1
+	volume_id 0x22
+	read
+		{
+		timeout 230
+		match_simple yes
+		match_simple_fixup yes
+		postcomp_simple yes
+		}
+	write
+		{
+		timeout 500
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		fill_length1 30
+		prolog_length 2048
+		}
+	track_range 0 31 1
+		{
+		interleave 1
+		bounds_new
+			{
+			0x0f00 0x1258 0x1a00
+			0x1b00 0x24b0 0x2d00
+			0x2e00 0x3708 0x4000
+			}
+		write precomp
+			{
+			+0x0000 +0x01c0 +0x01c0
+			-0x01c0 +0x0000 +0x0000
+			-0x01c0 +0x0000 +0x0000
+			}
+		sectors 12
+		}
+	track_range 32 63 1
+		{
+		interleave 1
+		bounds_new
+			{
+			0x1100 0x1400 0x1e00
+			0x1f00 0x2800 0x3200
+			0x3300 0x3c00 0x4800
+			}
+		write precomp
+			{
+			+0x0000 +0x0180 +0x0180
+			-0x0180 +0x0000 +0x0000
+			-0x0180 +0x0000 +0x0000
+			}
+		sectors 11
+		}
+	track_range 64 95 1
+		{
+		interleave 1
+		bounds_new
+			{
+			0x1200 0x1610 0x2100
+			0x2200 0x2c20 0x3700
+			0x3800 0x4230 0x5000
+			}
+		sectors 10
+		}
+	track_range 96 127 1
+		{
+		interleave 1
+		bounds_new
+			{
+			0x1400 0x18a0 0x2400
+			0x2500 0x3140 0x3d00
+			0x3e00 0x49e0 0x5400
+			}
+		sectors 9
+		}
+	track_range 128 159 1
+		{
+		interleave 1
+		bounds_new
+			{
+			0x1700 0x1bc0 0x2900
+			0x2a00 0x3780 0x4500
+			0x4600 0x5340 0x6000
+			}
+		sectors 8
+		}
+	}
+
+disk "mac_dsdd_800_524"
+	{
+	info "Apple, GCR, 3.5  inch, 80 trks, 2 sides, 8-12 sec/trk, 800K"
+	format "gcr_apple"
+	clock 14
+	mode 2
+	volume_id 0x22
+	read
+		{
+		timeout 230
+		match_simple yes
+		match_simple_fixup yes
+		postcomp_simple yes
+		}
+	write
+		{
+		timeout 500
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		fill_length1 30
+		prolog_length 2048
+		}
+	track_range 0 31 1
+		{
+		interleave 1
+		bounds_new
+			{
+			0x0f00 0x1258 0x1a00
+			0x1b00 0x24b0 0x2d00
+			0x2e00 0x3708 0x4000
+			}
+		write precomp
+			{
+			+0x0000 +0x01c0 +0x01c0
+			-0x01c0 +0x0000 +0x0000
+			-0x01c0 +0x0000 +0x0000
+			}
+		sectors 12
+		}
+	track_range 32 63 1
+		{
+		interleave 1
+		bounds_new
+			{
+			0x1100 0x1400 0x1e00
+			0x1f00 0x2800 0x3200
+			0x3300 0x3c00 0x4800
+			}
+		write precomp
+			{
+			+0x0000 +0x0180 +0x0180
+			-0x0180 +0x0000 +0x0000
+			-0x0180 +0x0000 +0x0000
+			}
+		sectors 11
+		}
+	track_range 64 95 1
+		{
+		interleave 1
+		bounds_new
+			{
+			0x1200 0x1610 0x2100
+			0x2200 0x2c20 0x3700
+			0x3800 0x4230 0x5000
+			}
+		sectors 10
+		}
+	track_range 96 127 1
+		{
+		interleave 1
+		bounds_new
+			{
+			0x1400 0x18a0 0x2400
+			0x2500 0x3140 0x3d00
+			0x3e00 0x49e0 0x5400
+			}
+		sectors 9
+		}
+	track_range 128 159 1
+		{
+		interleave 1
+		bounds_new
+			{
+			0x1700 0x1bc0 0x2900
+			0x2a00 0x3980 0x4500
+			0x4600 0x5340 0x6000
+			}
+		sectors 8
+		}
+	}
+
+disk "mac_dd_800"
+	{
+	info "same as mac_dsdd_800"
+	copy "mac_dsdd_800"
+	}
+
+disk "mac_dd"
+	{
+	info "same as mac_dsdd_800"
+	copy "mac_dsdd_800"
+	}
+
+disk "mac_dsdd_524"
+	{
+	info "same as mac_dsdd_800_524"
+	copy "mac_dsdd_800_524"
+	}
+
+disk "mac_dd_524"
+	{
+	info "same as mac_dsdd_800_524"
+	copy "mac_dsdd_800_524"
+	}
+
+disk "mac_dshd"
+	{
+	info "same as msdos_dshd"
+	copy "msdos_dshd"
+	}
+
+disk "mac_hd"
+	{
+	info "same as msdos_dshd"
+	copy "msdos_dshd"
+	}
+
+disk "ibm_dsdd"
+	{
+	info "MFM, 8 inch, 77 trks, 2 sides, 26 sec/track, track 0 side 0 FM"
+	format "fm_nec765"
+	clock 28
+	sectors 26
+	read
+		{
+		timeout 300
+		postcomp_simple yes
+		}
+	track 0 { }
+	format "mfm_nec765"
+	clock  28
+	sectors 26
+	sector_sizes
+		{
+		256 256 256 256 256 256 256 256
+		256 256 256 256 256 256 256 256
+		256 256 256 256 256 256 256 256
+		256 256
+		}
+	read
+		{
+		timeout 300
+		postcomp_simple yes
+		}
+	track_range 1 153 1 write
+		{
+		timeout 500
+		epilog_length 2048
+		}
+	}
+
+disk "dec_rx01_sssd"
+	{
+	info "FM,  8 inch, 77 trks, 1 side, 26 sec/trk"
+	format "fm_nec765"
+	clock 28
+	sectors 26
+	read
+		{
+		timeout 300
+		postcomp_simple yes
+		}
+	write
+		{
+		timeout 500
+		epilog_length 1024
+		}
+	track_range 0 152 2 { }
+	}
+
+disk "dg_dsdd"
+	{
+	info "MFM, 8 inch, 77 trks, 2 sides, 15 sec/trk"
+	format "mfm_nec765"
+	clock 28
+	sectors 15
+	read
+		{
+		timeout 300
+		postcomp_simple yes
+		}
+	write
+		{
+		timeout 500
+		epilog_length 1024
+		}
+	track_range 0 153 1 { }
+	}
+
+trackmap "victor9000_plain"
+	{
+	track 0 { image_track 0 format_track 0 }
+	track 2 { image_track 1 format_track 1 }
+	track 4 { image_track 2 format_track 2 }
+	track 6 { image_track 3 format_track 3 }
+	track 8 { image_track 4 format_track 4 }
+	track 10 { image_track 5 format_track 5 }
+	track 12 { image_track 6 format_track 6 }
+	track 14 { image_track 7 format_track 7 }
+	track 16 { image_track 8 format_track 8 }
+	track 18 { image_track 9 format_track 9 }
+	track 20 { image_track 10 format_track 10 }
+	track 22 { image_track 11 format_track 11 }
+	track 24 { image_track 12 format_track 12 }
+	track 26 { image_track 13 format_track 13 }
+	track 28 { image_track 14 format_track 14 }
+	track 30 { image_track 15 format_track 15 }
+	track 32 { image_track 16 format_track 16 }
+	track 34 { image_track 17 format_track 17 }
+	track 36 { image_track 18 format_track 18 }
+	track 38 { image_track 19 format_track 19 }
+	track 40 { image_track 20 format_track 20 }
+	track 42 { image_track 21 format_track 21 }
+	track 44 { image_track 22 format_track 22 }
+	track 46 { image_track 23 format_track 23 }
+	track 48 { image_track 24 format_track 24 }
+	track 50 { image_track 25 format_track 25 }
+	track 52 { image_track 26 format_track 26 }
+	track 54 { image_track 27 format_track 27 }
+	track 56 { image_track 28 format_track 28 }
+	track 58 { image_track 29 format_track 29 }
+	track 60 { image_track 30 format_track 30 }
+	track 62 { image_track 31 format_track 31 }
+	track 64 { image_track 32 format_track 32 }
+	track 66 { image_track 33 format_track 33 }
+	track 68 { image_track 34 format_track 34 }
+	track 70 { image_track 35 format_track 35 }
+	track 72 { image_track 36 format_track 36 }
+	track 74 { image_track 37 format_track 37 }
+	track 76 { image_track 38 format_track 38 }
+	track 78 { image_track 39 format_track 39 }
+	track 80 { image_track 40 format_track 40 }
+	track 82 { image_track 41 format_track 41 }
+	track 84 { image_track 42 format_track 42 }
+	track 86 { image_track 43 format_track 43 }
+	track 88 { image_track 44 format_track 44 }
+	track 90 { image_track 45 format_track 45 }
+	track 92 { image_track 46 format_track 46 }
+	track 94 { image_track 47 format_track 47 }
+	track 96 { image_track 48 format_track 48 }
+	track 98 { image_track 49 format_track 49 }
+	track 100 { image_track 50 format_track 50 }
+	track 102 { image_track 51 format_track 51 }
+	track 104 { image_track 52 format_track 52 }
+	track 106 { image_track 53 format_track 53 }
+	track 108 { image_track 54 format_track 54 }
+	track 110 { image_track 55 format_track 55 }
+	track 112 { image_track 56 format_track 56 }
+	track 114 { image_track 57 format_track 57 }
+	track 116 { image_track 58 format_track 58 }
+	track 118 { image_track 59 format_track 59 }
+	track 120 { image_track 60 format_track 60 }
+	track 122 { image_track 61 format_track 61 }
+	track 124 { image_track 62 format_track 62 }
+	track 126 { image_track 63 format_track 63 }
+	track 128 { image_track 64 format_track 64 }
+	track 130 { image_track 65 format_track 65 }
+	track 132 { image_track 66 format_track 66 }
+	track 134 { image_track 67 format_track 67 }
+	track 136 { image_track 68 format_track 68 }
+	track 138 { image_track 69 format_track 69 }
+	track 140 { image_track 70 format_track 70 }
+	track 142 { image_track 71 format_track 71 }
+	track 144 { image_track 72 format_track 72 }
+	track 146 { image_track 73 format_track 73 }
+	track 148 { image_track 74 format_track 74 }
+	track 150 { image_track 75 format_track 75 }
+	track 152 { image_track 76 format_track 76 }
+	track 154 { image_track 77 format_track 77 }
+	track 156 { image_track 78 format_track 78 }
+	track 158 { image_track 79 format_track 79 }
+	track 1 { image_track 80 format_track 128 }
+	track 3 { image_track 81 format_track 129 }
+	track 5 { image_track 82 format_track 130 }
+	track 7 { image_track 83 format_track 131 }
+	track 9 { image_track 84 format_track 132 }
+	track 11 { image_track 85 format_track 133 }
+	track 13 { image_track 86 format_track 134 }
+	track 15 { image_track 87 format_track 135 }
+	track 17 { image_track 88 format_track 136 }
+	track 19 { image_track 89 format_track 137 }
+	track 21 { image_track 90 format_track 138 }
+	track 23 { image_track 91 format_track 139 }
+	track 25 { image_track 92 format_track 140 }
+	track 27 { image_track 93 format_track 141 }
+	track 29 { image_track 94 format_track 142 }
+	track 31 { image_track 95 format_track 143 }
+	track 33 { image_track 96 format_track 144 }
+	track 35 { image_track 97 format_track 145 }
+	track 37 { image_track 98 format_track 146 }
+	track 39 { image_track 99 format_track 147 }
+	track 41 { image_track 100 format_track 148 }
+	track 43 { image_track 101 format_track 149 }
+	track 45 { image_track 102 format_track 150 }
+	track 47 { image_track 103 format_track 151 }
+	track 49 { image_track 104 format_track 152 }
+	track 51 { image_track 105 format_track 153 }
+	track 53 { image_track 106 format_track 154 }
+	track 55 { image_track 107 format_track 155 }
+	track 57 { image_track 108 format_track 156 }
+	track 59 { image_track 109 format_track 157 }
+	track 61 { image_track 110 format_track 158 }
+	track 63 { image_track 111 format_track 159 }
+	track 65 { image_track 112 format_track 160 }
+	track 67 { image_track 113 format_track 161 }
+	track 69 { image_track 114 format_track 162 }
+	track 71 { image_track 115 format_track 163 }
+	track 73 { image_track 116 format_track 164 }
+	track 75 { image_track 117 format_track 165 }
+	track 77 { image_track 118 format_track 166 }
+	track 79 { image_track 119 format_track 167 }
+	track 81 { image_track 120 format_track 168 }
+	track 83 { image_track 121 format_track 169 }
+	track 85 { image_track 122 format_track 170 }
+	track 87 { image_track 123 format_track 171 }
+	track 89 { image_track 124 format_track 172 }
+	track 91 { image_track 125 format_track 173 }
+	track 93 { image_track 126 format_track 174 }
+	track 95 { image_track 127 format_track 175 }
+	track 97 { image_track 128 format_track 176 }
+	track 99 { image_track 129 format_track 177 }
+	track 101 { image_track 130 format_track 178 }
+	track 103 { image_track 131 format_track 179 }
+	track 105 { image_track 132 format_track 180 }
+	track 107 { image_track 133 format_track 181 }
+	track 109 { image_track 134 format_track 182 }
+	track 111 { image_track 135 format_track 183 }
+	track 113 { image_track 136 format_track 184 }
+	track 115 { image_track 137 format_track 185 }
+	track 117 { image_track 138 format_track 186 }
+	track 119 { image_track 139 format_track 187 }
+	track 121 { image_track 140 format_track 188 }
+	track 123 { image_track 141 format_track 189 }
+	track 125 { image_track 142 format_track 190 }
+	track 127 { image_track 143 format_track 191 }
+	track 129 { image_track 144 format_track 192 }
+	track 131 { image_track 145 format_track 193 }
+	track 133 { image_track 146 format_track 194 }
+	track 135 { image_track 147 format_track 195 }
+	track 137 { image_track 148 format_track 196 }
+	track 139 { image_track 149 format_track 197 }
+	track 141 { image_track 150 format_track 198 }
+	track 143 { image_track 151 format_track 199 }
+	track 145 { image_track 152 format_track 200 }
+	track 147 { image_track 153 format_track 201 }
+	track 149 { image_track 154 format_track 202 }
+	track 151 { image_track 155 format_track 203 }
+	track 153 { image_track 156 format_track 204 }
+	track 155 { image_track 157 format_track 205 }
+	track 157 { image_track 158 format_track 206 }
+	track 159 { image_track 159 format_track 207 }
+	}
+
+disk "victor9000_dsdd"
+	{
+	info "Victor 9000, GCR, 5.25 inch, 80 trks, 2 sides, 11-19 sec/trk"
+	trackmap "victor9000_plain"
+	clock 28
+	format "gcr_v9000"
+	read
+		{
+		timeout 180
+		match_simple yes
+		match_simple_fixup yes
+		postcomp_simple yes
+		postcomp_simple_adjust { 0x0180 -0x0180 }
+		}
+	write
+		{
+		timeout 300
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		prolog_length 2048
+		}
+	bounds_new
+		{
+		0x0e00 0x1400 0x1f00
+		0x2000 0x2800 0x3300
+		0x3400 0x3c00 0x4800
+		}
+	sectors 19
+	track_range 0 6 2 read postcomp_simple_adjust { 0x0280 -0x0280 }
+	bounds_new
+		{
+		0x1000 0x1500 0x2100
+		0x2200 0x2a00 0x3500
+		0x3600 0x3f00 0x4a00
+		}
+	sectors 18
+	track_range 8 30 2 { }
+	track_range 1 15 2 { }
+	bounds_new
+		{
+		0x1200 0x1650 0x2300
+		0x2400 0x2ca0 0x3700
+		0x3800 0x42f0 0x5000
+		}
+	sectors 17
+	track_range 32 52 2 { }
+	track_range 17 37 2 { }
+	bounds_new
+		{
+		0x1400 0x1800 0x2500
+		0x2600 0x3000 0x3900
+		0x3a00 0x4800 0x5200
+		}
+	sectors 16
+	track_range 54 74 2 { }
+	track_range 39 59 2 { }
+	bounds_new
+		{
+		0x1600 0x1970 0x2700
+		0x2800 0x32e0 0x3d00
+		0x3e00 0x4c50 0x5800
+		}
+	sectors 15
+	track_range 76 94 2 { }
+	track_range 61 79 2 { }
+	bounds_new
+		{
+		0x1800 0x1b80 0x2900
+		0x2a00 0x3700 0x4300
+		0x4400 0x5280 0x6000
+		}
+	sectors 14
+	track_range 96 118 2 { }
+	track_range 81 103 2 { }
+	bounds_new
+		{
+		0x1a00 0x1d80 0x2b00
+		0x2c00 0x3b00 0x4700
+		0x4800 0x5880 0x6800
+		}
+	sectors 13
+	track_range 120 140 2 { }
+	track_range 105 125 2 { }
+	bounds_new
+		{
+		0x1c00 0x2040 0x2f00
+		0x3000 0x4080 0x5000
+		0x5100 0x60c0 0x7000
+		}
+	sectors 12
+	track_range 142 158 2 { }
+	track_range 127 149 2 { }
+	bounds_new
+		{
+		0x1c00 0x2150 0x2f00
+		0x3000 0x42a0 0x5000
+		0x5100 0x63f0 0x7000
+		}
+	sectors 11
+	track_range 151 159 2 { }
+	}
+
+disk "victor9000_ssdd"
+	{
+	info "Victor 9000, GCR, 5.25 inch, 80 trks, 1 side, 12-19 sec/trk"
+	trackmap "victor9000_plain"
+	clock 28
+	format "gcr_v9000"
+	read
+		{
+		timeout 180
+		match_simple yes
+		match_simple_fixup yes
+		postcomp_simple yes
+		postcomp_simple_adjust { 0x0180 -0x0180 }
+		}
+	write
+		{
+		timeout 300
+		precomp
+			{
+			+0x0000 +0x0100 +0x0100
+			-0x0100 +0x0000 +0x0000
+			-0x0100 +0x0000 +0x0000
+			}
+		prolog_length 2048
+		}
+	bounds_new
+		{
+		0x0e00 0x1400 0x1f00
+		0x2000 0x2800 0x3300
+		0x3400 0x3c00 0x4800
+		}
+	sectors 19
+	track_range 0 6 2 read postcomp_simple_adjust { 0x0280 -0x0280 }
+	bounds_new
+		{
+		0x1000 0x1500 0x2100
+		0x2200 0x2a00 0x3500
+		0x3600 0x3f00 0x4a00
+		}
+	sectors 18
+	track_range 8 30 2 { }
+	bounds_new
+		{
+		0x1200 0x1650 0x2300
+		0x2400 0x2ca0 0x3700
+		0x3800 0x42f0 0x5000
+		}
+	sectors 17
+	track_range 32 52 2 { }
+	bounds_new
+		{
+		0x1400 0x1800 0x2500
+		0x2600 0x3000 0x3900
+		0x3a00 0x4800 0x5200
+		}
+	sectors 16
+	track_range 54 74 2 { }
+	bounds_new
+		{
+		0x1600 0x1970 0x2700
+		0x2800 0x32e0 0x3d00
+		0x3e00 0x4c50 0x5800
+		}
+	sectors 15
+	track_range 76 94 2 { }
+	bounds_new
+		{
+		0x1800 0x1b80 0x2900
+		0x2a00 0x3700 0x4300
+		0x4400 0x5280 0x6000
+		}
+	sectors 14
+	track_range 96 118 2 { }
+	bounds_new
+		{
+		0x1a00 0x1d80 0x2b00
+		0x2c00 0x3b00 0x4700
+		0x4800 0x5880 0x6800
+		}
+	sectors 13
+	track_range 120 140 2 { }
+	bounds_new
+		{
+		0x1c00 0x2040 0x2f00
+		0x3000 0x4080 0x5000
+		0x5100 0x60c0 0x7000
+		}
+	sectors 12
+	track_range 142 158 2 { }
+	}

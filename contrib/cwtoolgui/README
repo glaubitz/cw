@@ -1,0 +1,23 @@
+# This is a quick GUI for cwtool to Read/Write amiga adf files back/forth to
+# floppy quickly using the Catweasl MK4 PCI card
+
+Tested on ubuntu dapper 6.06 all versions.
+
+You must have kaptain installed to use this script/s.
+(sudo apt-get install kaptain)
+
+# How to install these scripts
+
+1. Copy cwtoolreadgui and cwtoolwritegui to /bin folder and change
+   permissions to executable (chmod 755 /bin/cwtoolgui)
+
+2. Copy the root-cwtoolreadgui, root-cwtoolwritegui to
+   /home/*userhome*/.gnome2/nautilus-scripts (Automatix can install
+   nautilus-scripts), again change the file permissions to executable (see
+   above).
+
+Thats it!
+
+Enjoy!
+
+PegXlin DEV

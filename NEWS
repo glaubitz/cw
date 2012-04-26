@@ -1,0 +1,140 @@
+cw 0.13-20090511
+	* included cwio as interface to the kernel driver for other programs
+	* included new FPGA firmware for MK4 cards
+	* support for Victor 9000 disks was added (thanks to Jonathan
+	  Gevaryahu for supplying raw images)
+	* kernel driver: raw values to be written to disk are now subtracted
+	  from 0x7f instead of 0x80
+	* changed handling of raw images. raw images created with the current
+	  version are not compatible with earlier versions of cwtool, but it
+	  is still possible to read older raw images with the current cwtool
+	* new option: -o
+	* support for textual raw images (useful in combination with -o)
+	* consolidated naming scheme for disk formats (thanks to Jonathan
+	  Gevaryahu)
+	* changed configuration for mac_dsdd_800 and mac_dsdd_800_524.
+	  these formats are now using an experimental error correction.
+	  this may reduce read errors in some situations (thanks to Yves
+	  Benabou for supplying raw images)
+	* when writing D64 images the disk id used in sector headers is now
+	  taken from the BAM of the D64 image (offsets 0x165a2 and 0x165a3
+	  in the D64 image)
+	* corrected c1541 formats for 300 rpm drives with 40 and 42 tracks
+	* drive directives in /etc/cwtoolrc and ~/.cwtoolrc are now also
+	  used with cwtool -R and cwtool -W
+
+cw 0.12.3-20080211
+	* changed configuration mac_5.25. writing such images should now be
+	  possible (thanks to Matt Carpenter for supplying raw images and
+	  testing written images with a real Apple IIc)
+	* added configuration mac_5.25_300 for Apple IIe 5.25" disks. this
+	  format is an interims solution to support drives with 300 rpm.
+	  but do not rely on the existence of these formats in future
+	  versions, the handling of drives with different rpm's may change
+	  again
+	* compile time fixes for Linux 2.6.19+
+
+cw 0.12.2-20070324
+	* corrected track ranges in configurations for ibm_dsdd and dg_dsdd
+	* lowered needed sync_length for various c1541 configurations
+	* adjusted Makefile of the driver to fix compilation problems under
+	  Linux 2.4
+
+cw 0.12.1-20070319
+	* slightly changed configuration for mac_dd_800 and mac_dd_800_524
+	* enabled post compensation in all disk configurations. this should
+	  improve readability of disks but will also slow down disk reading
+	  especially on older computers with CPUs below 1 GHz
+
+cw 0.12-20070304
+	* support for Mac800K disks was added (thanks to Steve Ocepek,
+	  Oliver Stabel and Stefan A. Haubenthal for supplying raw images;
+	  thanks to Oliver Stabel for giving the useful hint to look at the
+	  MESS source http://www.mess.org/, especially the file ap_dsk35.c;
+	  thanks to Steve Ocepek for testing the images with a real Mac)
+	* added configuration mac_dd_800 and mac_dd_800_524 for Mac800
+	  disks. while mac_dd_800_524 writes out all 524 bytes of a sector,
+	  mac_dd_800 gives back 512 bytes per sector. this format is
+	  understood by "Mini vMac" (http://minivmac.sourceforge.net/).
+	  usually the additional 12 bytes in mac_dd_800_524 are not used very
+	  often
+	* the handling of sector interleave changed. because it is currently
+	  only used with the newly introduced mac_dd-formats other formats
+	  are not affected
+	* a small GUI for cwtool is now available in the contrib/ directory
+	  (written by David Bentham a.k.a PegXlin DEV). it uses kaptain and
+	  is currently able to read and write Amiga and MSDOS disks
+	* while searching for drives the motor is now turned on, because some
+	  drives will not seek without this (especially 8" drives, thanks
+	  to Jay Jaeger for pointing that out)
+	* corrected calculation of the initial value for crc16 and removed
+	  wrong byte shift of the sector data in the FM format 
+	* added configuration ibm_dsdd, dec_rx01_sssd and dg_dsdd. these
+	  formats are used on 8" disks (thanks to Jay Jaeger for supplying
+	  raw images)
+	* changed configuration for msdos_dd_5.25 (thanks to Oliver Stabel
+	  for supplying a raw image)
+
+cw 0.11-20060806
+	* changed handling of raw images. raw images created with the current
+	  version are not compatible with earlier versions of cwtool, but it
+	  is still possible to read older raw images with the current cwtool.
+	  the -r option is now important with raw images, because multiple
+	  instances of the same track may now be saved
+	* it is now possible to give more than one source file to -R, if
+	  reading from the first source still gives errors, the others are
+	  tried in the given order. with this feature you may create raw
+	  images of the same disk with different drives and then try to get
+	  the most out of them
+	* 'make install' should now add static entries for udev, but it was
+	  only tested with SuSE 10.0 and 10.1, please consult the README
+	* special support for D64 images with optional error information was
+	  added
+	* added configuration c1541_d64, c1541_40_d64 and c1541_42_d64 for
+	  D64 disk images with 35, 40 and 42 tracks
+	* support for 5.25" 360K drives was added (thanks to Jarkko Lethi
+	  for supplying such a drive). those drives typically operate with
+	  300 rpm instead of 360 rpm like the 1.2M drives do
+	* added configuration c1541_300, c1541_40_300, c1541_42_300,
+	  c1541_d64_300, c1541_40_d64_300, c1541_42_d64_300, c1541_g64_300,
+	  c1541_40_g64_300 and c1541_42_g64_300. these formats are an
+	  interims solution to support drives with 300 rpm especially with
+	  C1541 formats. but do not rely on the existence of these formats
+	  in future versions, the handling of drives with different rpm's
+	  may change again
+	* added configuration mac_5.25 for Apple IIe 5.25" disks (thanks
+	  to Stefan A. Haubenthal for supplying a raw image and to David
+	  Empson for giving helpful hints about the format)
+
+cw 0.10-20060215
+	* added configuration amiga_dd_5.25 for Amiga 5.25" DD (thanks to
+	  Oliver Stabel for supplying a raw image)
+	* added configuration mac_hd for Mac 3.5" HD disks (same as msdos_hd)
+	* added support for G64 disk images, only images with one speed zone
+	  per track are supported, please read the man page for more
+	* added configuration c1541_g64, c1541_40_g64 and c1541_42_g64 for
+	  G64 disk images with 35, 40 and 42 tracks
+	* added configuration c1541_42 for 42 track C1541 images
+	* changed configuration for c1541 and c1541_40, but this should
+	  be only an issue if you want to use raw image files from earlier
+	  versions of cwtool, this change was needed to equalize track
+	  numbering with G64 formats
+	* added more detailed error reporting if bad sectors where found
+	  with -R -v
+	* fixed endianess issue in the amiga checksum routine (thanks to
+	  Stefan A. Haubenthal for pointing that out)
+
+cw 0.09-20060110
+	* new option: -s
+	* changed configuration for c1541, c1541_40, c1571 and c1571_40.
+	  disks written with version 0.08 may cause read errors in
+	  original C1541 and C1571 drives, because the heads are thicker
+	  and are also influenced by data between the tracks (one track
+	  on C1541/C1571 drives are two tracks in 5.25" HD drives). when
+	  writing such disks the tracks inbetween are now cleared,
+	  furthermore other timings are used
+	* corrected track numbering for c1571, but i do not own a C1571 so
+	  i could not test if it is now working correctly
+
+cw 0.08-20051202
+	* first official release
